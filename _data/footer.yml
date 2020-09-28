@@ -1,0 +1,12 @@
+- links:
+  - name: Pricing
+    link: /pricing/
+  - name: About
+    link: /about/
+  - name: Contact
+    link: /contact/
+- links:
+  - name: GitHub
+    link: https://github.com/saasitive
+    new_window: true
+    social_icon: GitHub

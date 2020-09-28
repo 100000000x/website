@@ -1,0 +1,61 @@
+---
+title: Pricing
+heading: Find the perfect plan for you 
+description: 
+pricing_table:
+  - name: Free
+    color: "#8e8e8e"
+    features:
+      - text: Free
+        highlight: true
+      - text: Access to selected articles
+        highlight: false
+    call_to_action:
+      link: https://forms.gle/rgAG9gkhUEH2wUVt5
+      text: I'm interested!
+  - name: Professional
+    color: "#11cb11"
+    features:
+      - text: $29 per month
+        highlight: true
+      - text: Full access to all tutorials!
+        highlight: false
+      - text: New features requests
+        highlight: false
+      - text: Join our community Slack
+        highlight: false
+    call_to_action:
+      link: https://forms.gle/rgAG9gkhUEH2wUVt5
+      text: I'm interested!
+faq:
+  - question: Questions?
+    answer: Contact us for any further questions by <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#115;&#97;&#97;&#115;&#105;&#116;&#105;&#118;&#101;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">email</a>.
+---
+<div class="plans">
+	{% for plan in page.pricing_table %}
+		<ul class="plan">
+			<li style="background: {{ plan.color }}">
+				<h3>{{ plan.name }}</h3>
+			</li>
+			{% for feature in plan.features %}
+				<li {% if feature.highlight %} class="highlighted"{% endif %}>{{ feature.text }}</li>
+			{% endfor %}
+
+			{% if plan.call_to_action %}
+				<li class="pricing-cta"><div class="button"><a style="background: {{ plan.color }}" href="{{ plan.call_to_action.link }}">{{ plan.call_to_action.text }} &rarr;</a></div></li>
+			{% endif %}
+		</ul>
+	{% endfor %}
+</div>
+
+{% if page.faq %}
+	<h2>Pricing FAQ</h2>
+	<dl class="faq">
+		{% for item in page.faq %}
+			<div>
+				<dt>{{ item.question }}</dt>
+				<dd>{{ item.answer }}</dd>
+			</div>
+		{% endfor %}
+	</dl>
+{% endif %}
