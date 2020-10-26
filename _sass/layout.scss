@@ -1,11 +1,16 @@
 .container, .text-container {
 	margin: 0 auto;
 	position: relative;
-	padding: 0 20px;
+	padding: 0 5px;
 }
 
 .text-container {
 	max-width: 750px;
+	//background: rgba(0,0,0,.01);
+	background-color: #fff;
+    padding: 30px;
+    box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.05);
+    margin-bottom: 4rem;
 }
 
 .container {
@@ -16,6 +21,7 @@
 		padding: 0;
 	}
 }
+
 
 header {
 	color: $brand-color;
@@ -49,8 +55,8 @@ header {
 }
 
 .content {
-	background: #fff;
-	padding: 1px 0 0 0;
+	background: #f9f9f9; 
+	//padding: 1px 0 0 0;
 	position: relative;
 }
 

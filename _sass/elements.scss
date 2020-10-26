@@ -13,7 +13,7 @@ body {
 }
 
 a {
-	color: #1010cb;
+	color: #007cf2;
 	text-decoration: none;
 }
 
@@ -25,6 +25,11 @@ img {
 	width: 100%;
 }
 
+.emoji {
+	width: 20px;
+	height: 20px;
+}
+
 h1 strong, h2 strong {
 	font-weight: 700;
 }
@@ -33,29 +38,40 @@ h1 {
 	font-weight: 400;
 	font-size: 2.3em;
 	margin: 0;
+	color: rgba(0,0,0,.8);
 }
 
 h2 {
 	font-weight: 400;
 	font-size: 1.8em;
 	//margin: 0 0 30px 0;
+	color: rgba(0,0,0,.8);
+
 }
 
 h3 {
 	margin: 20px 0 10px 0;
+	color: rgba(0,0,0,.8);
 }
 
 
 p, address {
-	color: rgb(42, 42, 42);
+	color: rgba(0,0,0,.8);// #171717;// rgb(42, 42, 42);
 	margin-bottom: 20px;
 	//font-weight: 300;
 	line-height: 1.6em;
 }
 
 ul {
-	color: rgb(42, 42, 42);
+	color: rgba(0,0,0,.8); //#171717;
 	//font-size: 1.1em;
 	line-height: 1.6em;
 	//font-weight: 300;
+}
+
+hr {
+	margin-top: 2rem;
+    margin-bottom: 2.5rem;
+    border-width: 0;
+	border-top: 1px solid #E1E1E1;
 }

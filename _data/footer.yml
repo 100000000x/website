@@ -1,4 +1,6 @@
 - links:
+  - name: Blog
+    link: /blog/
   - name: Pricing
     link: /pricing/
   - name: About
