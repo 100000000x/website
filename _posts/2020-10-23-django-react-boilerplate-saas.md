@@ -4,6 +4,8 @@ categories:
     - Django
     - React
     - Boilerplate
+    - Frontend
+    - Backend
 author: Piotr Płoński
 date: 2020-10-23
 type: blog

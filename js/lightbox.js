@@ -90,7 +90,15 @@ document.addEventListener("DOMContentLoaded", function() {
   var elements = document.querySelectorAll("a");
   elements.forEach(element => {
     var url = element.getAttribute("href");
+
     if (url) {
+      // quick and dirty fix, I have no idea why such characters are added
+      if (url.endsWith("%0A")) {
+        element.setAttribute("href", url.slice(0, url.length - 3)); //url.replace("%0A", "")
+      }
+
+      /*
+      // disable videos, for now they are not needed
       if (
         url.indexOf("vimeo") !== -1 &&
         !element.classList.contains("no-lightbox")
@@ -100,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
       if (is_youtubelink(url) && !element.classList.contains("no-lightbox")) {
         element.classList.add("lightbox-youtube");
         element.setAttribute("data-id", is_youtubelink(url));
-      }
+      }*/
       if (is_imagelink(url) && !element.classList.contains("no-lightbox")) {
         element.classList.add("lightbox-image");
         var href = element.getAttribute("href");
