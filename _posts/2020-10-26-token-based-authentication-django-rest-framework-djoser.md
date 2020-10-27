@@ -300,6 +300,16 @@ The endpoint returns the JSON with user information:
 }
 ```
 
+### Commit changes to the repository
+
+Please remember to update the repository with recent changes:
+
+```bash
+git add apps
+git commit -am "add backend authentication"
+git push
+```
+
 ---
 
 ## Summary
