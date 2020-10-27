@@ -19,7 +19,8 @@ What are we going to do in this post:
 
 - We will install Django Rest Framework (DRF) and Djoser packages.
 - We will setup settings and urls. 
-- User will be able to signup with username and password. User will be able to login, get her profile and logout.
+- User will be able to signup with username and password. 
+- User will be able to login, get her profile, and logout.
 - We will manually test our REST API with DRF browsable API.
 
 What are we **not** going to do in this post:
@@ -129,14 +130,14 @@ We need to add URL endpoints to our backend. The URLs will be provided by Djoser
 In this post, we will use following endpoints:
 - `/users/` - to signup a new user,
 - `/users/me/` - to get user information,
-- `/token/login/` - to get token
-- `/token/logout/` - to logout
+- `/token/login/` - to get token,
+- `/token/logout/` - to logout.
 
-Endpoints for account activation and password rest will be used in the future post.
+(Endpoints for account activation and password rest will be used in the future post.)
 
-We can add endpoints directly into `backend/server/server/urls.py` file. However, in this series of post we would like to build a complete boilerplate for creating a SaaS, for this let's add a Django application `accounts`. It will be needed in the future, for example for account actication or payments. For now, we will just fill `urls.py`.
+We can add endpoints directly into `backend/server/server/urls.py` file. However, in this series of post we would like to build a complete boilerplate for creating a SaaS, for this let's add a Django application `accounts`. It will be needed in the future, for example for account activation or payments. For now, we will just fill `urls.py` file.
 
-To add new application in Django run following:
+To add new application in Django please run following:
 
 ```bash
 # please run in backend/server directory
@@ -145,9 +146,9 @@ mkdir apps
 mv accounts apps
 ```
 
-I made additional directory `apps` to keep all applications in it. It will help to keep the whole project well organized.
+I made additional directory `apps` to keep all applications in it. It will help to keep the whole project well organized (I like it).
 
-Please add a new file `urls.py` in `backend/server/apps/accounts` with following content:
+Please add a new file `urls.py` in `backend/server/apps/accounts` with the following content:
 
 ```python
 # backend/server/apps/accounts file
@@ -174,7 +175,7 @@ urlpatterns = [
 urlpatterns += accounts_urlpatterns # add URLs for authentication
 ```
 
-
+Your backend directory structure should look like below:
 ```bash
 .
 ├── apps
@@ -199,8 +200,7 @@ urlpatterns += accounts_urlpatterns # add URLs for authentication
 
 ```
 
-
-To have new app available in Django we need to add it in `backend/server/server/settings.py`:
+We need to add new app in `backend/server/server/settings.py`:
 
 ```python
 
@@ -216,7 +216,7 @@ INSTALLED_APPS = [
     # 
     'rest_framework',
     'rest_framework.authtoken',
-    'djoser',
+    'djoser', # remember about comma!
     # 
     'apps.accounts' # add new application
 ]
@@ -234,7 +234,7 @@ Please apply database migrations:
 
 **Note:** We don't need to run `./manage.py makemigrations` because we do not add any new models. But we will use models from Django and DRF, that's why we need to run `migrate`.
 
-## Test Authentication REST Endpoints
+## Manually Test Authentication REST Endpoints
 
 For checking REST API endpoints I will use browsable DRF API, which is amazing (in my opinion)!
 
@@ -306,7 +306,7 @@ The endpoint returns the JSON with user information:
 
 - In this post, we created authentication backend.
 - User is able to create account with username and password.
-- There is login and logout enpoints available. And enpoint with user information.
+- There is login and logout endpoints available. And endpoint with user information.
 - The user activation and password reset functionality will be presented in the future post.
 
 **Note:** In this post, we do not cover the CORS headers problem. It will be covered in the next post.
