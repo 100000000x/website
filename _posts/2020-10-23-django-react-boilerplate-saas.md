@@ -250,7 +250,7 @@ You can check the repository in the browser (in my case it will be [https://gith
 - We have backend and frontend applications initialized. We are able to run development servers for both apps.
 - The code is manages in the code repository.
 
-## What's next
+## What's next?
 
 We will write authentication for backend in the next post. We will use Token-based authentication from Django Rest Framework and Djoser package for ready views. Our authentication backend will be able to:
 - create (signup) a new user,
