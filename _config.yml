@@ -84,7 +84,6 @@ plugins:
   - jekyll-seo-tag
   - jekyll-feed
   - jekyll-paginate
-  - jemoji
 
 exclude:
   - Gemfile
@@ -105,6 +104,3 @@ social_icons:
   - Twitter
   - YouTube
   - RSS
-
-emoji:
-  src: "https://github.githubassets.com/images/icons/"

@@ -56,7 +56,7 @@ I'm using [Visual Code](https://code.visualstudio.com/) for text editing. It is 
 
 I'm using [GitHub](https://github.com) for code repository. It is free for public and private repositories. The alternative to GitHub can be: [BitBucket](https://bitbucket.org/) or [GitLab](https://gitlab.com) (both with free plans).
 
-Let's go into [https://github.com/new](https://github.com/new) and start a new repository! :rocket:
+Let's go into [https://github.com/new](https://github.com/new) and start a new repository! 
 
 [![Create code repository in GitHub for your project](create_repository.png){:.image-border}](create_repository.png)
 
@@ -143,7 +143,7 @@ Please enter [`127.0.0.1:8000`](http://127.0.0.1:8000) in your favourite browser
 
 [![Default Django welcome site](django_start_project.png){:.image-border}](django_start_project.png)
 
-Congratulations you have successfully initialized the backend! :tada: We are in the half-way of this post, let's initialize the frontend project.
+Congratulations you have successfully initialized the backend! We are in the half-way of this post, let's initialize the frontend project.
 
 To stop the Django development server use keyboard: `CONTROL+C`.
 
@@ -246,7 +246,7 @@ You can check the repository in the browser (in my case it will be [https://gith
 
 ## Summary
 
-- The hardest part is to start and we already started! :tada: 
+- The hardest part is to start and we already started!  
 - We have backend and frontend applications initialized. We are able to run development servers for both apps.
 - The code is manages in the code repository.
 
@@ -257,4 +257,4 @@ We will write authentication for backend in the next post. We will use Token-bas
 - login and logout the user,
 - return user information.
 
-:point_right: Next article: [Token Based Authenitcation with Django Rest Framework and Djoser](/blog/token-based-authentication-django-rest-framework-djoser)
+Next article: [Token Based Authenitcation with Django Rest Framework and Djoser](/blog/token-based-authentication-django-rest-framework-djoser)

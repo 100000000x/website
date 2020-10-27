@@ -93,9 +93,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (url) {
       // quick and dirty fix, I have no idea why such characters are added
-      if (url.endsWith("%0A")) {
-        element.setAttribute("href", url.slice(0, url.length - 3)); //url.replace("%0A", "")
-      }
+      //if (url.endsWith("%0A")) {
+      //  element.setAttribute("href", url.slice(0, url.length - 3)); //url.replace("%0A", "")
+      //}
 
       /*
       // disable videos, for now they are not needed
