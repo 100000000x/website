@@ -12,6 +12,8 @@ type: blog
 ---
 
 In this post, we will create a docker-compose for our project. 
+
+What will we do:
 - We will use docker-compose to pack all parts. 
 - We will build React application and server its static files with nginx. 
 - We will use nginx to reverse-proxy API calls to Django server. 
