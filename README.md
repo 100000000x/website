@@ -27,5 +27,5 @@ $ bundle exec jekyll serve
 ## Deploy
 ```
 JEKYLL_ENV=production bundle exec jekyll build
-aws s3 sync _site/ s3://saasitive.com
+aws s3 sync _site/ s3://saasitive.com --cache-control max-age=86400
 ```
