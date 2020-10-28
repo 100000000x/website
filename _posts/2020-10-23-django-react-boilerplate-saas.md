@@ -3,9 +3,9 @@ title: Starting SaaS with Django and React
 categories: 
     - Django
     - React
-    - Boilerplate
-    - Frontend
     - Backend
+    - Frontend
+    - Boilerplate
 author: Piotr Płoński
 date: 2020-10-23
 type: blog

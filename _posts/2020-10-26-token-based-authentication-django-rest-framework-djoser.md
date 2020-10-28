@@ -2,7 +2,7 @@
 title: Token Based Authentication with Django Rest Framework and Djoser
 categories: 
  - Django
- - DRF
+ - Django-Rest-Framework
  - Token based authentication
  - Djoser
  - Backend
