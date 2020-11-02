@@ -1,29 +1,21 @@
 ---
-title: React Token Based Authentication to Django Backend
+title: React Routing and Components for Signup and Login 
 categories: 
  - React
- - Token based authentication
  - Frontend
 author: Piotr Płoński
-date: 2020-10-27
+date: 2020-10-25
 type: blog
 ---
 
-In this post, we will write user interface in React for token-based authentication to Django backend. We will use code from previous post: [Token Based Authenitcation with Django Rest Framework and Djoser](/blog/token-based-authentication-django-rest-framework-djoser) (code with tag [v2](https://github.com/saasitive/django-react-boilerplate/tree/v2))
+In this post, we will create a user interface in React for authentication (Signup and Login). Components will not performa any actions. We will use code from previous post: [Starting SaaS with Django and React](/tutorial/django-react-boilerplate-saas) (code with tag [v1](https://github.com/saasitive/django-react-boilerplate/tree/v1)). In the next posts we will create an authentication in [Django backend](/tutorial/token-based-authentication-django-rest-framework-djoser) and [in React frontend](/tutorial/react-token-based-authentication-django).
 
-This post will be splitted into following parts:
+What will we do in this post:
 
 - First create React components (Home, Signup, Login, Dashboard).
 - Create React routing with `react-router-dom` package.
-- Add Redux to React.
-- Add Signup actions and reducer.
-- Add Login actions and reducer.
-- Create `AuthenticatedComponent` for authenticated routing.
-- Add CORS and CSRF protections to Django server. It will be required because we will make requests from other port than server and to be safe. The CSRF token protect server agains [Cross-Site Request Forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery).
 
-In this tutorial we will use [`axios`](https://github.com/axios/axios) package for doing server requests from React. We will use [`bootstrap`](https://getbootstrap.com/) with [`react-bootstrap`](https://react-bootstrap.github.io/) package to build frontend user internaface.
-
-If you would like to see post hto to use React with other than `bootstrap` packages, please let me know by filling the [form](https://forms.gle/rgAG9gkhUEH2wUVt5). Other packages can be: [Material](https://material-ui.com/), [Ant](https://ant.design/docs/react/introduce), [Bulma](https://bulma.io/), or [Tailwind](https://tailwindcss.com/).
+In this tutorial we will use [`bootstrap`](https://getbootstrap.com/) with [`react-bootstrap`](https://react-bootstrap.github.io/) package to build frontend user internaface. If you would like to see post hto to use React with other than `bootstrap` packages, please let me know by filling the [form](https://forms.gle/rgAG9gkhUEH2wUVt5). Other packages can be: [Material](https://material-ui.com/), [Ant](https://ant.design/docs/react/introduce), [Bulma](https://bulma.io/), or [Tailwind](https://tailwindcss.com/).
 
 ## Add React Components
 
