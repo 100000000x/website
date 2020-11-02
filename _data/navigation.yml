@@ -1,5 +1,5 @@
-- name: Blog
-  link: /blog/
+- name: Tutorials
+  link: /tutorial/
   new_window: false
   highlight: false
 - name: Pricing
