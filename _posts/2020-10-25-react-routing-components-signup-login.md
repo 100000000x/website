@@ -14,6 +14,7 @@ What will we do in this post:
 
 - Create React components (Home, Signup, Login, Dashboard).
 - Add routing with `react-router-dom` package between views. 
+- Initialize Redux structure in the project.
 
 In this tutorial we will use [`bootstrap`](https://getbootstrap.com/) with [`react-bootstrap`](https://react-bootstrap.github.io/) package to build frontend user interface. If you would like to see post how to use React with other than `bootstrap` packages, please let me know by filling the [form](https://forms.gle/rgAG9gkhUEH2wUVt5). Other packages can be: [Material](https://material-ui.com/), [Ant](https://ant.design/docs/react/introduce), [Bulma](https://bulma.io/), or [Tailwind](https://tailwindcss.com/).
 
@@ -94,14 +95,14 @@ class App extends Component {
 export default App;
 ```
 
-The development server should refresh the [`http://localhost:3000`](http://localhost:3000) website and show "Hi!".
+The development server should refresh the [`http://localhost:3000`](http://localhost:3000) website and display "Hi!".
 
 OK, let's add `components` directory in `frontend/src` and `Home.js` file in it.
 
 ```jsx
 // frontent/src/components/Home.js
 import React, { Component } from "react";
-import { Container } from "reactstrap";
+import { Container } from "react-bootstrap";
 
 class Home extends Component {
   render() {
@@ -116,7 +117,7 @@ class Home extends Component {
 export default Home;
 ```
 
-Wait ... How to navigate to `Home.js` view? We will need a router! (It is already installed from `react-router-dom` package)
+Wait ... How to navigate to `Home.js` view? We will need a router! (It is already installed with `react-router-dom` package)
 
 Let's go to `App.js` file.
 
@@ -143,7 +144,7 @@ class App extends Component {
 export default App;
 ```
 
-We added `BrowsableRouter` with `Switch` and one `Route` to `path="/"` with route to our `Home` component. We can add more components. We will add them in separate directories, because later we will create actions and reducers for each (the Redux part).
+We added `BrowsableRouter` with `Switch` and one `Route` to `path="/"`. It routes to our `Home` component. We can add more components. We will add them in separate directories, because later we will create actions and reducers for each (the Redux part).
 
 Let's add `signup`, `login`, `dashboard` directories in `frontend/src/components`. 
 
@@ -211,11 +212,13 @@ class Dashboard extends Component {
 export default Dashboard;
 ```
 
-We have three new components which we will add to our router. We won't be able to access them without adding them to the router
+We have three new components. We will add them to our router.
 
 Please update the `frontend/src/App.js` file:
 
 ```jsx
+// frontend/src/App.js file
+
 import React, { Component } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Home from "./components/Home";
@@ -290,7 +293,7 @@ Your fronted code structure should look like below after this part of the post:
 
 ### React components
 
-Let's add more code to the components. We will make `Home.js` as the main view with links to others:
+Let's add more code to the components. We will make `Home.js` as the main view with links to the others:
 
 ```jsx
 // frontend/src/components/Home.js
@@ -356,7 +359,7 @@ class Signup extends Component {
       username: this.state.username,
       password: this.state.password
     };
-    console.log("Signup " + userData.username + " " + userData.password);
+    console.log("Sign up " + userData.username + " " + userData.password);
   };
 
   render() {
@@ -364,7 +367,7 @@ class Signup extends Component {
       <Container>
         <Row>
           <Col md="4">
-            <h1>Signup</h1>
+            <h1>Sign up</h1>
             <Form>
               <Form.Group controlId="usernameId">
                 <Form.Label>User name</Form.Label>
@@ -407,7 +410,7 @@ class Signup extends Component {
 export default Signup;
 ```
 
-We use `bootstrap` forms to create signup form. It is only a visual part of it. Is is not going to perform any actions, but we will add it soon (in this post). If you will write some username and password and click on `Signup` button, you should see some logs in your console (web tools). There are two variables in component's state: `username` and `password`. Both variables are connected with input fields.
+We use `bootstrap` forms to create signup form. It is only a visual part of it. Is is not going to perform any actions, but we will add it soon (in the next posts). If you will write some username and password and click on `Signup` button, you should see some logs in your console (please open [web tools](https://developers.google.com/web/tools/chrome-devtools/console) to check console). There are two variables in the component's state: `username` and `password`. Both variables are connected with input fields.
 
 Please take a notice that only username and password is requred to create the account. In the future post, there will be an example where there will be needed: user name, email address, password and repeated password (the login will be based on email + password).
 
@@ -502,19 +505,9 @@ After above steps you should have following views:
 ![](dashboard.png){:.image-border}
 
 
-
-
-
-
-
-
-
-
-
-
 ## Add Redux to React
 
-[Redux](https://redux.js.org/) will help as organize and manage application data. It consists of three main concepts:
+[Redux](https://redux.js.org/) will help us organize and manage the application data. It consists of three main concepts:
 
 - **Store** which keeps information about application state (data),
 - **Reducer** that specify how the state is changed in response to actions,
@@ -526,7 +519,7 @@ Before adding new code, let's install necessary packages:
 npm install redux react-redux redux-thunk connected-react-router
 ```
 
-First we will define **Reducer**. Please add `Reducer.js` file in `frontend/src` directory:
+First we will define the **Reducer**. Please add `Reducer.js` file in `frontend/src` directory:
 
 ```jsx
 // frontend/src/Reducer.js
@@ -542,7 +535,7 @@ const createRootReducer = history =>
 export default createRootReducer;
 ```
 
-If we will create a new reducer for a component we will add it here.
+If we will create a new reducer for a component we will add it here. It is the main reducer that concatenates all component's reducers from the application.
 
 Then, we need to add **Store** to our application. Please add `Root.js` file in `frontend/src` directory:
 
@@ -585,7 +578,7 @@ The last change will replace `Router` with `Root` component in `App.js`.
 
 import React, { Component } from "react";
 import Root from "./Root"; // <------------- new import
-import { Route, Switch } from "react-router-dom"; // <--- remove Router
+import { Route, Switch } from "react-router-dom"; // <--- remove BrowserRouter
 import Home from "./components/Home";
 import Signup from "./components/signup/Signup";
 import Login from "./components/login/Login";
@@ -595,7 +588,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Root> {/* replace Router with Root */}
+        <Root> {/* replace BrowserRouter with Root */}
           <Switch>
             <Route path="/signup" component={Signup} />
             <Route path="/login" component={Login} />
@@ -603,7 +596,7 @@ class App extends Component {
             <Route exact path="/" component={Home} />
             <Route path="*">Ups</Route>
           </Switch>
-        </Root> {/* replace Router with Root */}
+        </Root> {/* replace BrowserRouter with Root */}
       </div>
     );
   }
@@ -612,14 +605,35 @@ class App extends Component {
 export default App;
 ```
 
-The application should run without any changes in behavior. We've just added empty skeleton. This is the time to add the first actions and reducer to create a new user (sign up view)!
+The application should run without any changes in the behavior. We've just added empty skeleton for Redux. We will add more to it in the next posts.
 
+### Commit code to the repository
+
+Please remember to commit all code changes to the repository:
+
+```bash
+
+git add src/components/
+git add src/Reducer.js
+git add src/Root.js
+git add package-lock.json 
+
+git commit -am "add signup and login components"
+
+git push
+```
+
+## Summary
+
+- We added new components (`Home`, `Signup`, `Login`, and `Dashboard`) to the fronted.
+- There is routing defined between component's views.
+- The Redux skeleton was added to the React application.
 
 ## What's next?
 
-We will write authentication for backend in the next post. We will use Token-based authentication from Django Rest Framework and Djoser package for ready views. Our authentication backend will be able to:
+We will add authentication REST API in the backend. We will use Token-based authentication from Django Rest Framework and Djoser package. Our authentication REST API will be able to:
 - create (signup) a new user,
 - login and logout the user,
 - return user information.
 
-Next article: [Token Based Authenitcation with Django Rest Framework and Djoser](/blog/token-based-authentication-django-rest-framework-djoser)
+Next article: [Token Based Authenitcation with Django Rest Framework and Djoser](/tutorial/token-based-authentication-django-rest-framework-djoser)
