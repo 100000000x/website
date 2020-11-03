@@ -623,6 +623,8 @@ git commit -am "add signup and login components"
 git push
 ```
 
+---
+
 ## Summary
 
 - We added new components (`Home`, `Signup`, `Login`, and `Dashboard`) to the fronted.
