@@ -252,9 +252,10 @@ You can check the repository in the browser (in my case it will be [https://gith
 
 ## What's next?
 
-We will write authentication for backend in the next post. We will use Token-based authentication from Django Rest Framework and Djoser package for ready views. Our authentication backend will be able to:
-- create (signup) a new user,
-- login and logout the user,
-- return user information.
+In the next post, we will write the user interface for authentication. It will be only view of UI without taking any actions (without connecting to the backend). We will prepare:
 
-Next article: [Token Based Authenitcation with Django Rest Framework and Djoser](/blog/token-based-authentication-django-rest-framework-djoser)
+- create (signup) view for a new user,
+- login view,
+- show home and dashboard views.
+
+Next article: [React Routing and Components for Signup and Login](/tutorial/react-routing-components-signup-login)

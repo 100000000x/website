@@ -8,18 +8,18 @@ date: 2020-10-25
 type: blog
 ---
 
-In this post, we will create a user interface in React for authentication (Signup and Login). Components will not performa any actions. We will use code from previous post: [Starting SaaS with Django and React](/tutorial/django-react-boilerplate-saas) (code with tag [v1](https://github.com/saasitive/django-react-boilerplate/tree/v1)). In the next posts we will create an authentication in [Django backend](/tutorial/token-based-authentication-django-rest-framework-djoser) and [in React frontend](/tutorial/react-token-based-authentication-django).
+We will create a user interface in React for authentication (Signup and Login views). Components will not performa any actions (they won't be communicating with backend, yet). We will use code from previous post: [Starting SaaS with Django and React](/tutorial/django-react-boilerplate-saas) (code with tag [v1](https://github.com/saasitive/django-react-boilerplate/tree/v1)). In the next posts we will create an authentication in [Django backend](/tutorial/token-based-authentication-django-rest-framework-djoser) and [in React frontend](/tutorial/react-token-based-authentication-django).
 
 What will we do in this post:
 
-- First create React components (Home, Signup, Login, Dashboard).
-- Create React routing with `react-router-dom` package.
+- Create React components (Home, Signup, Login, Dashboard).
+- Add routing with `react-router-dom` package between views. 
 
-In this tutorial we will use [`bootstrap`](https://getbootstrap.com/) with [`react-bootstrap`](https://react-bootstrap.github.io/) package to build frontend user internaface. If you would like to see post hto to use React with other than `bootstrap` packages, please let me know by filling the [form](https://forms.gle/rgAG9gkhUEH2wUVt5). Other packages can be: [Material](https://material-ui.com/), [Ant](https://ant.design/docs/react/introduce), [Bulma](https://bulma.io/), or [Tailwind](https://tailwindcss.com/).
+In this tutorial we will use [`bootstrap`](https://getbootstrap.com/) with [`react-bootstrap`](https://react-bootstrap.github.io/) package to build frontend user interface. If you would like to see post how to use React with other than `bootstrap` packages, please let me know by filling the [form](https://forms.gle/rgAG9gkhUEH2wUVt5). Other packages can be: [Material](https://material-ui.com/), [Ant](https://ant.design/docs/react/introduce), [Bulma](https://bulma.io/), or [Tailwind](https://tailwindcss.com/).
 
 ## Add React Components
 
-Please open a new terminal window and navigate to `frontend` directory. Then, please run the development server:
+Please open a new terminal window and navigate to the `frontend` directory. Then, please run the development server:
 
 ```bash
 npm start
@@ -501,6 +501,17 @@ After above steps you should have following views:
 
 ![](dashboard.png){:.image-border}
 
+
+
+
+
+
+
+
+
+
+
+
 ## Add Redux to React
 
 [Redux](https://redux.js.org/) will help as organize and manage application data. It consists of three main concepts:
@@ -603,207 +614,12 @@ export default App;
 
 The application should run without any changes in behavior. We've just added empty skeleton. This is the time to add the first actions and reducer to create a new user (sign up view)!
 
-Let's add new files in `frontend/src/components/signup` directory:
 
-- `SignupTypes.js` - it will define types of actions in the sign up component,
-- `SignupActions.js` - it will implements actions needed for sign up,
-- `SignupReducer.js` - it will implements how actions change the sign up data store.
+## What's next?
 
-The content of `SignupTypes.js`:
+We will write authentication for backend in the next post. We will use Token-based authentication from Django Rest Framework and Djoser package for ready views. Our authentication backend will be able to:
+- create (signup) a new user,
+- login and logout the user,
+- return user information.
 
-```jsx
-// frontend/src/components/signup/SignupTypes.js
-export const CREATE_USER_SUBMITTED = "CREATE_USER_SUBMITTED";
-export const CREATE_USER_SUCCESS = "CREATE_USER_SUCCESS";
-export const CREATE_USER_ERROR = "CREATE_USER_ERROR";
-```
-
-There are three types of actions:
-
-- `CREATE_USER_SUBMITTED`, which means that the request to create user was send and we are waiting for server response. After this action we should disable `Signup` button till there is server response.
-- `CREATE_USER_SUCCESS` - the action is called after `HTTP 201 CREATED` response from server, which means that user was created.
-- `CREATE_USER_ERROR` - the action is called when there was an error during creation of the user and it was not created.
-
-We have types of actions defined, so let's create the **Reducer**. Please add the following content to `SignupReducer.js`:
-
-```jsx
-// frontend/src/components/SignupReducer.js
-
-// import needed actions
-import {
-  CREATE_USER_ERROR,
-  CREATE_USER_SUBMITTED,
-  CREATE_USER_SUCCESS
-} from "./SignupTypes";
-
-// define the initial state of the signup store
-const initialState = {
-  usernameIsInvalid: false,
-  usernameError: "",
-  passwordIsInvalid: false,
-  passwordError: "",
-  isSubimtted: false
-};
-
-// define how action will change the state of the store
-export const signupReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case CREATE_USER_SUBMITTED:
-      return {
-        usernameIsInvalid: false,
-        usernameError: "",
-        passwordIsInvalid: false,
-        passwordError: "",
-        isSubimtted: true
-      };
-    case CREATE_USER_ERROR:
-      const errorState = {
-        usernameIsInvalid: false,
-        usernameError: "",
-        passwordIsValid: true,
-        passwordError: "",
-        isSubimtted: false
-      };
-      if (action.errorData.hasOwnProperty("username")) {
-        errorState.usernameIsInvalid = true;
-        errorState.usernameError = action.errorData["username"];
-      }
-      if (action.errorData.hasOwnProperty("password")) {
-        errorState.passwordIsInvalid = false;
-        errorState.passwordError = action.errorData["password"];
-      }
-      return errorState;
-    case CREATE_USER_SUCCESS:
-      return {
-        usernameIsInvalid: false,
-        usernameError: "",
-        passwordIsInvalid: true,
-        passwordError: "",
-        isSubimtted: false
-      };
-    default:
-      return state;
-  }
-}
-```
-
-The above **Reducer** accepts as input the `initialState`:
-
-```jsx
-const initialState = {
-  usernameIsInvalid: false,
-  usernameError: "",
-  passwordIsInvalid: false,
-  passwordError: "",
-  isSubimtted: false
-};
-```
-The `initialState` defines what attributes will be in our store. It also set the inital (default) values which are set at the beginning of application run. We will have following variables in `Signup` components:
-
-- `usernameIsInvalid` will tell to the form if username input filed is valid or not. The default is set to `false` (invalid is false, which means that input is valid).
-- `usernameError` is the string that will be diplayed if there is error with username. The default is set to empty string.
-- `passwordIsInvalid` will tell to the form if password is correctly filled. 
-- `passwordError` is the string with error message displayed if the password field is invalid (`passwordIsInvalid = true`).
-- `isSubmitted` informs the component that create action was submitted. If `isSubmitted = true` the `Signup` button should be disabled (we don't accept next signup requests untill the response from server).
-
-There is a big `switch` statement in the `signupReducer` with separate `case` for each action type. Each action type define its own way how to change the selected state of the application. Please remember to add `default` case which will just return the current state. That's all, we have a reducer!
-
-We need to add a signup reducer to the root reducer in `frontend/src/Reducer.js` (the `rootReducer` is connected to our store in method `createStore()` in the `frontend/src/Root.js` file):
-
-```jsx
-// frontend/src/Reducer.js
-import { combineReducers } from "redux";
-import { connectRouter } from "connected-react-router";
-
-// import new reducer
-import { signupReducer } from "./components/signup/SignupReducer";
-
-const createRootReducer = history =>
-  combineReducers({
-    router: connectRouter(history),
-    createUser: signupReducer // <--- add it here
-  });
-
-export default createRootReducer;
-```
-
-Before defining actions we need to install one more (maybe two) packages. We need a package for sending requests to the server. I'm using [`axios`](https://github.com/axios/axios) package.
-
-One more package, that is optional, I like to add toast notifications. For this I'm using [`react-toastify`](https://github.com/fkhadra/react-toastify). It is optional and you can add different way to display notifications.
-
-The package installation command:
-
-```bash
-# should run in frontend directory
-npm install axios react-toastify
-```
-
-Let's add action to send the request to the server to create a new user:
-
-```jsx
-// frontend/src/components/signup/SignupActions.js
-
-import axios from "axios";
-import { push } from "connected-react-router";
-import { toast } from "react-toastify";
-import { isEmpty } from "../../utils/Utils";
-import {
-  CREATE_USER_ERROR,
-  CREATE_USER_SUBMITTED,
-  CREATE_USER_SUCCESS
-} from "./SignupTypes";
-
-export const createUser = userData => dispatch => {
-  dispatch({ type: CREATE_USER_SUBMITTED }); // set submitted state
-  axios
-    .post("/api/v1/users/", userData)
-    .then(response => {
-      toast.success(
-        "Account for " +
-          userData.username +
-          " created successfully. Please login."
-      );
-      dispatch({ type: CREATE_USER_SUCCESS });
-    })
-    .catch(error => {
-      if (
-        !isEmpty(error) &&
-        !isEmpty(error.response) &&
-        error.response.hasOwnProperty("data")
-      ) {
-        // known error
-        toast.error(JSON.stringify(error.response.data));
-        dispatch({
-          type: CREATE_USER_ERROR,
-          errorData: error.response.data
-        });
-      } else {
-        if (!isEmpty(error.message)) {
-          toast.error(JSON.stringify(error.message));
-        } else {
-          toast.error(JSON.stringify(error));
-        }
-      }
-    });
-};
-```
-
-There is only one action in the `SignupActions.js`. It sends `POST` request to server (at url `/api/v1/users/`) with `userData`. It defines what to do with server response:
-
-- if success then green toast is displayed and `CREATE_USER_SUCCESS` is dispatched,
-- in the case of error, it dispatches `CREATE_USER_ERROR` and show red toast.
-
-Is it going to work?
-
-Not yet ...
-
-We still need to add few things:
-
-- We need to connect signup action with `Signup` button - when we click the button the request should be send.
-- We need to configure `axios` - we need to set the server URL.
-- The last thing, we need to set CORS in the server.
-
-### Add Signup Action to the button
-
-
-https://github.com/axios/axios#handling-errors
+Next article: [Token Based Authenitcation with Django Rest Framework and Djoser](/blog/token-based-authentication-django-rest-framework-djoser)
