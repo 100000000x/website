@@ -760,7 +760,7 @@ In the case of success:
 
 In the case of error response:
 
-- It clears user data and token in the `loclStorage` and `auth` store.
+- It clears user data and token in the `localStorage` and `auth` store.
 - It shows the error toast.
 
 ```jsx
