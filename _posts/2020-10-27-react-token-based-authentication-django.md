@@ -990,3 +990,5 @@ Here is my opinion.
 ## What's next?
 
 We will create views that require autnetication to be displayed. In this post, user can see the `Dashboard` component even if she is not logged in. We will write `AuthenticatedComponent` that will check if user is authenticated. If yes then it will show the component, otherwise it will redirect user to login view.
+
+Next article: [React Authenticated Component](/tutorial/react-authenticated-component)
