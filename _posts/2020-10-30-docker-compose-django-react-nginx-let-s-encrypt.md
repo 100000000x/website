@@ -1,5 +1,5 @@
 ---
-title: Docker-Copose for Django and React with Nginx reverse-proxy and Let's encrypt certificate
+title: Docker-Compose for Django and React with Nginx reverse-proxy and Let's encrypt certificate
 categories:
     - Docker-Compose
     - Django

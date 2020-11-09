@@ -15,7 +15,12 @@ I will post here ideas for new posts. If you would like to see a topic selected 
 - Security in Django, examples of attacks.
 - How to deploy Django and React application to AWS?
 - How to deploy Django and React application to DigitalOcean?
+- Deploy a Django-React app to Heroku using Docker
 - JWT authentication in Django.
 - Authentication with email in Django.
 - Emails in Django.
+- Modals in React
+- How to structure Django and React project
+- Serve React static files with Django.
+- Add Stripe subscription payments to Django.
 - ... topic selected by you!

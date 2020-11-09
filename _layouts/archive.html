@@ -5,16 +5,12 @@ layout: page
 <div class="text-container">
 	{% assign blog = site.pages | where: "path", "blog/index.html" | first %}
 
-	{% if blog.title %}
-		<h2>{{ blog.title }}</h2>
-	{% endif %}
+	<h1>Django and React Tutorial</h1>
 
-	{% if blog.description %}
-		<p class="subtext">{{ blog.description }}</p>
-	{% endif %}
+	<p class="subtext">Learn how to write SaaS application with Django and React from scratch</p>
 
 	<div class="center-text">
-		<span class="blog-filter cross"><a href="{{ site.baseurl }}/blog/">{{ page.title | capitalize }}</a></span>
+		<h2>Topic: {{ page.title | capitalize }} </h2>
 	</div>
 
 	<ul class="blog-posts">

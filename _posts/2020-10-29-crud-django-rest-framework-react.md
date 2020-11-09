@@ -446,10 +446,179 @@ export default connect(mapStateToProps, {
 })(withRouter(NotesList));
 ```
 
-delete update
+## delete update
 
+```jsx
+// frontend/src/components/notes/NotesTypes.js
+
+export const GET_NOTES = "GET_NOTES";
+export const ADD_NOTE = "ADD_NOTE";
+export const DELETE_NOTE = "DELETE_NOTE"; // add new types
+export const UPDATE_NOTE = "UPDATE_NOTE"; // add new types
+
+```
+
+```jsx
+// frontend/src/components/notes/NotesActions.js
+import { GET_NOTES, ADD_NOTE, DELETE_NOTE, UPDATE_NOTE } from "./NotesTypes";
+
+// ...
+
+// new functions
+export const deleteNote = id => dispatch => {
+  axios
+    .delete(`/api/v1/notes/${id}/`)
+    .then(response => {
+      dispatch({
+        type: DELETE_NOTE,
+        payload: id
+      });
+    })
+    .catch(error => {
+      toastOnError(error);
+    });
+};
+
+export const updateNote = (id, note) => dispatch => {
+  axios
+    .patch(`/api/v1/notes/${id}/`, note)
+    .then(response => {
+      dispatch({
+        type: UPDATE_NOTE,
+        payload: response.data
+      });
+    })
+    .catch(error => {
+      toastOnError(error);
+    });
+};
+
+```
+
+```jsx
+// frontend/src/components/notes/NotesReducer.js
+
+import { GET_NOTES, ADD_NOTE, UPDATE_NOTE, DELETE_NOTE } from "./NotesTypes";
+
+const initialState = {
+  notes: []
+};
+
+export const notesReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case GET_NOTES:
+      return {
+        ...state,
+        notes: action.payload
+      };
+    case ADD_NOTE:
+      return {
+        ...state,
+        notes: [...state.notes, action.payload]
+      };
+    case DELETE_NOTE:
+      return {
+        ...state,
+        notes: state.notes.filter((item, index) => item.id !== action.payload)
+      };
+    case UPDATE_NOTE:
+      const updatedNotes = state.notes.map(item => {
+        if (item.id === action.payload.id) {
+          return { ...item, ...action.payload };
+        }
+        return item;
+      });
+      return {
+        ...state,
+        notes: updatedNotes
+      };
+    default:
+      return state;
+  }
+};
+
+```
+
+```jsx
+// frontend/src/components/notes/Note.js
+
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { deleteNote, updateNote } from "./NotesActions";
+import { Button } from "react-bootstrap";
+
+class Note extends Component {
+  onDeleteClick = () => {
+    const { note } = this.props;
+    this.props.deleteNote(note.id);
+  };
+  onUpperCaseClick = () => {
+    const { note } = this.props;
+    this.props.updateNote(note.id, {
+      content: note.content.toUpperCase()
+    });
+  };
+  onLowerCaseClick = () => {
+    const { note } = this.props;
+    this.props.updateNote(note.id, {
+      content: note.content.toLowerCase()
+    });
+  };
+  render() {
+    const { note } = this.props;
+    return (
+      <div>
+        <hr />
+        <p>
+          (id:{note.id}) {note.content}
+        </p>
+        <Button variant="secondary" size="sm" onClick={this.onUpperCaseClick}>
+          Upper case
+        </Button>{" "}
+        <Button variant="info" size="sm" onClick={this.onLowerCaseClick}>
+          Lower case
+        </Button>{" "}
+        <Button variant="danger" size="sm" onClick={this.onDeleteClick}>
+          Delete
+        </Button>
+      </div>
+    );
+  }
+}
+
+Note.propTypes = {
+  note: PropTypes.object.isRequired
+};
+const mapStateToProps = state => ({});
+
+export default connect(mapStateToProps, { deleteNote, updateNote })(
+  withRouter(Note)
+);
+
+```
+
+```jsx
+// frontend/src/components/notes/NodesList.js
+
+// ...
+       <div>
+        <h2>Notes</h2>
+        {items}
+        <hr /> {/* add horizontal line */}
+      </div>
+// ...
+```
 
 [![Dashboard Notes](dashboard_notes.png){:.image-border}](dashboard_notes.png)
 
 [![Dashboard Notes Update and Delete](dashboard_notes_update_delete.png){:.image-border}](dashboard_notes_update_delete.png)
 
+### Add changes to repository code
+```bash
+git add backend/server/apps/notes/
+git add frontend/src/components/notes/
+git commit -am "add CRUD in django and react"
+git push
+```
