@@ -219,3 +219,237 @@ class Migration(migrations.Migration):
 
 [![Notes DELETE PUT REST API](notes_REST_API_delete_put.png){:.image-border}](notes_REST_API_delete_put.png)
 
+
+
+```jsx
+// frontend/src/components/notes/NotesTypes.js
+export const GET_NOTES = "GET_NOTES";
+export const ADD_NOTE = "ADD_NOTE";
+```
+
+
+```jsx
+// frontend/src/components/notes/NotesActions.js
+import axios from "axios";
+import { toastOnError } from "../../utils/Utils";
+import { GET_NOTES, ADD_NOTE } from "./NotesTypes";
+
+export const getNotes = () => dispatch => {
+  axios
+    .get("/api/v1/notes/")
+    .then(response => {
+      dispatch({
+        type: GET_NOTES,
+        payload: response.data
+      });
+    })
+    .catch(error => {
+      toastOnError(error);
+    });
+};
+
+export const addNote = note => dispatch => {
+  axios
+    .post("/api/v1/notes/", note)
+    .then(response => {
+      dispatch({
+        type: ADD_NOTE,
+        payload: response.data
+      });
+    })
+    .catch(error => {
+      toastOnError(error);
+    });
+};
+```
+
+```jsx
+// frontend/src/components/notes/NotesReducer.js
+import { GET_NOTES, ADD_NOTE } from "./NotesTypes";
+
+const initialState = {
+  notes: []
+};
+
+export const notesReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case GET_NOTES:
+      return {
+        ...state,
+        notes: action.payload
+      };
+    case ADD_NOTE:
+      return {
+        ...state,
+        notes: [...state.notes, action.payload]
+      };
+    default:
+      return state;
+  }
+};
+```
+
+```jsx
+// frontend/Reducer.js
+
+import { combineReducers } from "redux";
+import { connectRouter } from "connected-react-router";
+
+import { signupReducer } from "./components/signup/SignupReducer";
+import { loginReducer } from "./components/login/LoginReducer";
+import { notesReducer } from "./components/notes/NotesReducer";
+
+const createRootReducer = history =>
+  combineReducers({
+    router: connectRouter(history),
+    createUser: signupReducer,
+    auth: loginReducer,
+    notes: notesReducer
+  });
+
+export default createRootReducer;
+```
+
+
+```jsx
+// frontend/src/components/notes/Note.js
+
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+
+class Note extends Component {
+  render() {
+    const { note } = this.props;
+    return (
+      <div>
+        <p>{note.content}</p>
+      </div>
+    );
+  }
+}
+
+Note.propTypes = {
+  note: PropTypes.object.isRequired
+};
+export default Note;
+```
+
+
+```jsx
+// frontend/src/components/notes/AddNote.js
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { Button, Form } from "react-bootstrap";
+import { addNote } from "./NotesActions";
+
+class AddNote extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      content: ""
+    };
+  }
+  onChange = e => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  onAddClick = () => {
+    const note = {
+      content: this.state.content
+    };
+    this.props.addNote(note);
+  };
+
+  render() {
+    return (
+      <div>
+        <h2>Add new note</h2>
+        <Form>
+          <Form.Group controlId="contentId">
+            <Form.Label>Note</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              name="content"
+              placeholder="Enter note"
+              value={this.content}
+              onChange={this.onChange}
+            />
+          </Form.Group>
+        </Form>
+        <Button variant="success" onClick={this.onAddClick}>
+          Add note
+        </Button>
+      </div>
+    );
+  }
+}
+
+AddNote.propTypes = {
+  addNote: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({});
+
+export default connect(mapStateToProps, { addNote })(withRouter(AddNote));
+```
+
+```jsx
+// frontend/src/components/notes/NotesList.js
+
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { getNotes } from "./NotesActions";
+
+import Note from "./Note";
+
+class NotesList extends Component {
+  componentDidMount() {
+    this.props.getNotes();
+  }
+
+  render() {
+    const { notes } = this.props.notes;
+
+    if (notes.length === 0) {
+      return <h2>Please add your first note</h2>;
+    }
+
+    let items = notes.map(note => {
+      return <Note key={note.id} note={note} />;
+    });
+
+    return (
+      <div>
+        <h2>Notes</h2>
+        {items}
+      </div>
+    );
+  }
+}
+
+NotesList.propTypes = {
+  getNotes: PropTypes.func.isRequired,
+  notes: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  notes: state.notes
+});
+
+export default connect(mapStateToProps, {
+  getNotes
+})(withRouter(NotesList));
+```
+
+delete update
+
+
+[![Dashboard Notes](dashboard_notes.png){:.image-border}](dashboard_notes.png)
+
+[![Dashboard Notes Update and Delete](dashboard_notes_update_delete.png){:.image-border}](dashboard_notes_update_delete.png)
+
