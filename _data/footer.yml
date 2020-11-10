@@ -1,6 +1,6 @@
 - links:
   - name: Tutorial
-    link: /tutorial/
+    link: /django-react/boilerplate/
   - name: Articles
     link: /tutorial/
   - name: Pricing
@@ -15,3 +15,8 @@
     link: https://github.com/saasitive
     new_window: true
     social_icon: GitHub
+  - name: Twitter
+    link: https://twitter.com/saasitive
+    new_window: true
+    social_icon: Twitter
+  

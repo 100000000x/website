@@ -75,3 +75,21 @@ hr {
     border-width: 0;
 	border-top: 1px solid #E1E1E1;
 }
+
+.cookieButton {
+	background-color:$brand-color;
+	border-radius:3px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	padding:9px 23px;
+	text-decoration:none;
+}
+.cookieButton:hover {
+	background-color: $secondary-brand-color;
+	text-decoration:none;
+}
+.cookieButton:active {
+	position:relative;
+	top:1px;
+}
