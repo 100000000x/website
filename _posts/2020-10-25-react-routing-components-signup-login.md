@@ -3,6 +3,7 @@ title: React Routing and Components for Signup and Login
 categories: 
  - React
  - Frontend
+ - Boilerplate
 author: Piotr Płoński
 date: 2020-10-25
 type: blog

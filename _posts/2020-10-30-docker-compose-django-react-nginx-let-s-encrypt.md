@@ -6,12 +6,13 @@ categories:
     - React
     - Nginx
     - Let's encrypt
+    - Boilerplate
 author: Piotr Płoński
-date: 2020-10-29
+date: 2020-10-30
 type: blog
 ---
 
-In this post, we will create a docker-compose for our project. 
+Coming soon.
 
 What will we do:
 - We will use docker-compose to pack all parts. 

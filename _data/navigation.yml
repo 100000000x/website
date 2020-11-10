@@ -1,13 +1,13 @@
-- name: Tutorials
+- name: Tutorial
+  link: /django-react/boilerplate/
+  new_window: false
+  highlight: false
+- name: Articles
   link: /tutorial/
   new_window: false
   highlight: false
 - name: Pricing
   link: /pricing/
-  new_window: false
-  highlight: false
-- name: About
-  link: /about/
   new_window: false
   highlight: false
 - name: Contact

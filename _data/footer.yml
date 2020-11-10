@@ -1,8 +1,11 @@
 - links:
-  - name: Tutorials
+  - name: Tutorial
+    link: /tutorial/
+  - name: Articles
     link: /tutorial/
   - name: Pricing
     link: /pricing/
+- links:
   - name: About
     link: /about/
   - name: Contact

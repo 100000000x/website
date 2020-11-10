@@ -6,6 +6,7 @@ categories:
  - Token based authentication
  - Djoser
  - Backend
+ - Boilerplate
 author: Piotr Płoński
 date: 2020-10-26
 type: blog

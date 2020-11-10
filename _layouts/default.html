@@ -1,18 +1,19 @@
 <!doctype html>
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
 
-		{% seo %}
-		{% feed_meta %}
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<link rel="stylesheet" href="{{ site.baseurl }}/css/screen.css">
-		<link rel="icon" type="image/png" href="{{ site.baseurl }}/favicon.png">
-		<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,600,700" rel="stylesheet">
+	{% seo %}
+	{% feed_meta %}
 
-		<!--
+	<link rel="stylesheet" href="{{ site.baseurl }}/css/screen.css">
+	<link rel="icon" type="image/png" href="{{ site.baseurl }}/favicon.svg">
+	<link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,600,700" rel="stylesheet">
+
+	<!--
 		{% if jekyll.environment == 'production' and site.google_analytics_key != '' %}
 			<script>
 				window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
@@ -22,40 +23,54 @@
 			<script async src='https://www.google-analytics.com/analytics.js'></script>
 		{% endif %}
 		-->
-	</head>
-	<body>
-		<header>
-			<div class="container">
-				<div class="the-logo"><a href="{{ site.baseurl }}/">SaaSitive</a></div>
-				{% include navigation.html %}
-			</div>
-		</header>
-		{{ content }}
-		<footer>
-			<div class="container">
-				<div class="footer-columns">
-					{% for column in site.data.footer %}
-					<ul class="footer-links">
-						{% for link in column.links %}
-							<li><a {% if link.new_window %}target="_blank"{% endif %} href="{% include relative-src.html src=link.link %}" {% if link.social_icon %}class="{{ link.social_icon }}-icon"{% endif %}>
-								{% if link.social_icon %}
-									{% include social-icon.html icon=link.social_icon %}
-								{% endif %}
-								{{ link.name }}</a></li>
-						{% endfor %}
-					</ul>
+</head>
+
+<body>
+	<header>
+		<div class="container">
+			<!--<div class="the-logo"><a href="{{ site.baseurl }}/">SaaSitive</a></div>-->
+			<a href="{{ site.baseurl }}/">
+				<img src="{{ site.baseurl }}/images/logo.svg" alt="SaaSitive logo" style="width: 20%" />
+			</a>
+			{% include navigation.html %}
+		</div>
+	</header>
+	{{ content }}
+	<footer>
+		<div class="container">
+			<div class="footer-columns">
+				<ul class="footer-links">
+					<a href="{{ site.baseurl }}/" style="text-decoration: none;">
+						<img src="{{ site.baseurl }}/images/logo-white.svg" alt="SaaSitive logo"
+							style="width: 100%; padding-top: 40px " />
+						Django and React Tutorials</a>
+
+				</ul>
+				{% for column in site.data.footer %}
+				<ul class="footer-links">
+					{% for link in column.links %}
+					<li><a {% if link.new_window %}target="_blank" {% endif %}
+							href="{% include relative-src.html src=link.link %}"
+							{% if link.social_icon %}class="{{ link.social_icon }}-icon" {% endif %}>
+							{% if link.social_icon %}
+							{% include social-icon.html icon=link.social_icon %}
+							{% endif %}
+							{{ link.name }}</a></li>
 					{% endfor %}
-				</div>
-				<p class="copyright">&copy; {{ site.time | date: '%Y' }} MLJAR Sp. z o.o. </p>
+				</ul>
+				{% endfor %}
 			</div>
-		</footer>
-		<!--<script>
+			<p class="copyright">&copy; {{ site.time | date: '%Y' }} MLJAR Sp. z o.o. </p>
+		</div>
+	</footer>
+	<!--<script>
 			document.getElementById("open-nav").onclick = function () {
 				document.body.classList.toggle("nav-open");
 				return false;
 			};
 		</script>-->
-		<script type="text/javascript" src="/js/lightbox.js"></script>
-		<link rel="stylesheet" href="/css/lightbox.css">
-	</body>
+	<script type="text/javascript" src="/js/lightbox.js"></script>
+	<link rel="stylesheet" href="/css/lightbox.css">
+</body>
+
 </html>

@@ -63,7 +63,7 @@
 
 	.post-details {
 		border-bottom: 1px solid #eee;
-		font-size: .9em;
+		font-size: 0.9em;
 
 		.blog-filter {
 			display: inline-block;
@@ -72,6 +72,9 @@
 			a {
 				position: relative;
 				top: -5px;
+				padding: 5px;
+				background-color: $fourth-brand-color;
+				color: $brand-color;
 			}
 		}
 

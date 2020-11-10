@@ -39,7 +39,7 @@ nav {
     margin: 0 3px;
     font-size: 1.3em;
     font-weight: 500;
-    color: #676;
+    color: $brand-color;
     transition: 0.2s ease-in-out;
     display: none;
 
@@ -67,8 +67,8 @@ nav {
   }
 
   a:hover {
-    border-bottom: 1px solid rgba(17, 203, 17, 0.3);
-    color: #11cb11;
+    border-bottom: 1px solid $secondary-brand-color;
+    color: $secondary-brand-color;
   }
 
   @media #{$mid-point} {
@@ -78,12 +78,12 @@ nav {
 
       &:hover {
         background: #fff;
-        color: $brand-color;
+        color: $secondary-brand-color;
       }
     }
   }
 
-  a.active {
-    color: #11cb11;
-  }
+  //a.active {
+    //color: $third-brand-color;
+  //}
 }

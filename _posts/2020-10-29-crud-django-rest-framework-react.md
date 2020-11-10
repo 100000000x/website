@@ -5,14 +5,14 @@ categories:
     - React
     - Backend
     - Frontend
-    - Boilerplate
     - Django-Rest-Framework
+    - Boilerplate
 author: Piotr Płoński
 date: 2020-10-29
 type: blog
 ---
 
-Create a New Model in Django, Django Rest Framework and React
+Create a CRUD model in Django Rest Framework and React.
 
 
 

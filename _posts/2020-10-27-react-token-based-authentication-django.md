@@ -4,6 +4,7 @@ categories:
  - React
  - Token based authentication
  - Frontend
+ - Boilerplate
 author: Piotr Płoński
 date: 2020-10-27
 type: blog
