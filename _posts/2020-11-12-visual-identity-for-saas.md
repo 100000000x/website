@@ -22,7 +22,7 @@ You can achieve effective visual identification on your website with these steps
 
 ### Creative work
 
-Some creative work to do. Try to imagine your service with a miniature or with one tool, thing, object. Scrawl a few pages to find that one you will identify (including an abstract spot) or... look for some inspirations on the Internet. The best way is to prepare your logo in vector so you can use it in many materials, advertisement, website. You just can scale it, vector graphics need less space for storage. It will make website loading faster. Search similar projects, compare or try logo generators e.g. (but for most of them you have to pay). An easy way is to use a free, unusual font and give the name of your business. An example is saasitive.com, where we used two different fonts:
+Some creative work to do. Try to imagine your service with a miniature or with one tool, thing, object. Scrawl a few pages to find that one you will identify (including an abstract spot) or... look for some inspirations on the Internet. The best way is to prepare your logo in vector so you can use it in many materials, advertisement, website. You just can scale it, vector graphics need less space for storage. It will make website loading faster. Search similar projects, compare or try logo generators e.g. (but for most of them you have to pay). An easy way is to use a free, unusual font and give the name of your business. An example is [saasitive.com](https://saasitive.com), where we used two different fonts:
 
 ![Saasitive logo](logo_saasitive.png)
 
