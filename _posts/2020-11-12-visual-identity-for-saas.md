@@ -53,9 +53,30 @@ You can just try to use generators like https://formito.com/tools/favicon.
 Want to share your website on social media? You better prepare a meta image. It consists of an image with a title, a short description, and the domain name. It should have 1200x630 px. You can check how your graphic will look at https://metatags.io/. Let your users share articles, tutorials from your website by giving a link with an expressive picture. It could looks like this:
 ![MetaImage](metaimage.png)
 
-To be accurate prepare footer to e-mails which will be sent automatically. Use the chosen font and logo so users remembered your visual identity. Don’t forget to include the address of your website, e-mail address, and other important information.
+To be accurate prepare footer to e-mails which will be sent automatically. Use the chosen font and logo so users remember your visual identity. Include the address of your website, e-mail address, and other important information.
 
 All adverts, banners and graphics you can do with well prepared elements above.
+
+Summary
+
+Preparing visual identification is a process in which you create a clever brand image. Using all hints above will help your SAAS to stand out of the competition and give a consistency in communication. Besides your website will give strong impression and build trust of the users and attract them. 
+![Clever_Brand](Clever_Brand.png)
+
+Leading an internet business mainly based on advertisement, social media, GitHub, StackOverflow, and others. To advertise you need ready visual identification. Logo starts to be recognizable if you use it to promote, advertise your SaaS. First of all, you need to gather this information in one place to find it quickly. Create a folder and put all items listed below in it.
+
+The minimum what your visual identity book needs:
+
+•	company symbols - logo, logotype, decorative symbols (if it’s possible to try to make it also in black-white colors, in many combinations vertical, horizontal, and in few different sizes also keep the most used logo in different formats e.g. pdf, jpg, SVG);
+
+•	colors (describe colors in many options: RGB, CMYK and Hex Code, HTML - to find it use e.g. https://www.rapidtables.com/web/color/RGB_Color.html );
+
+•	company typography - font type and size;
+
+•	icons or pictures you will dress features, functions, or descriptions, or the content.
+
+The rest you will compile with elements upstream.  
+
+You can check Visual Identity Book of SaaSitive here (https://github.com/saasitive/visual-identity-book). Let us know if it was helpful. 
 
 
 
