@@ -64,3 +64,14 @@ docker-compose -f docker-compose-dev.yml up
 ```bash
 docker-compose -f docker-compose-dev.yml up --build
 ```
+```bash
+sudo docker-compose down
+```
+
+```
+sudo tar -czvf certbot.tar.gz docker/nginx/certbot
+
+```
+
+
+rsync -avz -progress -e "ssh -i ~/Downloads/boilerplate.pem" ubuntu@ec2-100-26-177-134.compute-1.amazonaws.com:/home/ubuntu/app/certbot.tar.gz .certbot
