@@ -22,6 +22,35 @@ What will we do:
 - We will add Let's encrypt certbot running in the docker-compose for certificate renewal. 
 
 
+
+
+
+
+
+
+
+
+
+```py
+# backend/server/server/settings.py
+
+# ...
+
+DEBUG = False
+
+ALLOWED_HOSTS = ["0.0.0.0"]
+
+# ...
+
+MEDIA_URL = '/media/'
+STATIC_URL = '/django_static/' 
+STATIC_ROOT = BASE_DIR / 'django_static'
+```
+
+
+
+
+
 ```bash
 chmod +x docker/backend/wsgi-entrypoint.sh
 ```
