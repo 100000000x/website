@@ -21,3 +21,17 @@ What will we do:
 - We will use a script to issue Let's encrypt certificate.
 - We will add Let's encrypt certbot running in the docker-compose for certificate renewal. 
 
+
+```bash
+chmod +x docker/backend/wsgi-entrypoint.sh
+```
+
+
+
+```bash
+docker-compose -f docker-compose-dev.yml build
+docker-compose -f docker-compose-dev.yml up
+```
+```bash
+docker-compose -f docker-compose-dev.yml up --build
+```
