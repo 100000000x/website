@@ -6,12 +6,15 @@ layout: page
 	<h1>{{ page.title }}</h1>
 	{% include post-title.html post=page %}
 
-	{% include tutorial-links.html post=page %}
+	
 
 	<div class="post-content">
 		{{ content }}
 
 		<hr>
+		{% include tutorial-links.html post=page %}
+
+		
 		<h4>Let's stay in touch!</h4>
 		<p>
 			Would you like to be notified about new posts? Please fill this 
@@ -26,6 +29,7 @@ layout: page
 
 		 <hr>
 
+		 
 		<div class="blog-navigation">
 			{% if page.previous.url %}
 				<a class="prev" href="{% include relative-src.html src=page.previous.url %}">&laquo; {{ page.previous.title }}</a>
