@@ -22,5 +22,7 @@ I will post here ideas for new posts. If you would like to see a topic selected 
 - Modals in React
 - How to structure Django and React project
 - Serve React static files with Django.
+- Serve static files for Django (not only React static files).
 - Add Stripe subscription payments to Django.
+- How request it processed in DRF?
 - ... topic selected by you!

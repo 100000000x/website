@@ -19,7 +19,11 @@ layout: page
 	<div class="center-text">
 		<h2>Topic: {{ page.title | capitalize }} </h2>
 	</div>
-
+ 
+	{% if page.title == "Boilerplate" %}
+ 
+	{% include tutorial-links.html post=page %}
+	{% endif %} 
 	<ul class="blog-posts">
 		{% include list-posts.html posts=page.posts %}
 	</ul>

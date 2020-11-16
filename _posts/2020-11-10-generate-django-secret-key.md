@@ -8,7 +8,7 @@ type: blog
 ---
 
 
-Have you ever committed a Django project with `SECRET_KEY`? Ups, it happens to me very often. Don't worry. This can be easily fixed.
+Have you ever pushed to the repository a Django project with `SECRET_KEY`? Ups, it happens to me very often. Don't worry. This can be easily fixed.
 
 The [`SECRET_KEY`](https://docs.djangoproject.com/en/3.1/ref/settings/#std:setting-SECRET_KEY) is used in Django for [cryptographic signing](https://docs.djangoproject.com/en/3.1/topics/signing/). It is used to generate tokens and hashes. If somebody will have your `SECRET_KEY` he can recreate your tokens.
 

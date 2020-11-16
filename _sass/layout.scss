@@ -90,32 +90,19 @@ section + section {
 }
 
 blockquote {
+	border-left: 3px solid $brand-color;
+	background-color: $fourth-brand-color;
 	padding: 18px 25px;
-	margin: 0;
-	quotes: "\201C""\201D""\2018""\2019";
+	margin-inline-end: 0px;
+	margin-inline-start: 0px;
 	font-style: italic;
-
-	.author {
-		display: block;
-		font-weight: bold;
-		margin: 10px 0 0 0;
-		font-size: .85em;
-		font-style: normal;
-	}
 
 	p {
 		display: inline;
 	}
 }
 
-blockquote:before {
-	color: #ccc;
-	content: open-quote;
-	font-size: 4em;
-	line-height: 0.1em;
-	margin-right: 0.25em;
-	vertical-align: -0.4em;
-}
+
 
 .page {
 	margin-bottom: 0;

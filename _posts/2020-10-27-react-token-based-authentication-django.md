@@ -983,8 +983,8 @@ Here is my opinion.
 - First of all, React has built-in mechanism against XSS attacks. It will render raw HTML only if you explicitly ask for it with [`dangerouslySetInnerHTML`](https://reactjs.org/docs/dom-elements.html#dangerouslysetinnerhtml).
 - If there will be XSS, then bad actor can read `token` from `localStorage` but what can he do with it? He can send it to his server or use it for malicious requests. We can protect the application against loading unknow scripts from unknown sources with Content Security Policy (CSP) (for sure I will write about it in the future posts). 
 - OK, so there is still option to do malicious requests. This can be done for both types of data storing: `localStorage` and `cookies`.
-- What is more, if cookies with `httpOnly` are used, malicious requests can be done from other sources (the Cross-Site Request Forgery). Such attack doesn't apply in the case of `localStorage`.
-- The easiest solution to protect agains mailicious requests is to logout (in our case). In this tutorial, at logout the token is destroyed, so it can't be used anymore to authenticate requests.
+- What is more, if cookies with `httpOnly` are used, malicious requests can be done from other sources (the Cross-Site Request Forgery). Such an attack doesn't apply in the case of `localStorage`.
+- The easiest solution to protect against malicious requests is to logout (in our case). In this tutorial, at logout the token is destroyed, so it can't be used anymore to authenticate requests.
 - To summarize, in the case of XSS, there is no rescue (cookies wont help much). Cookies enable one more type of attack: CSRF.
 - In my opinion, the approach that I show you is as secure.
 
