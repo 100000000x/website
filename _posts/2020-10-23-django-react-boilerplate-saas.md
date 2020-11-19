@@ -17,7 +17,7 @@ The main costs:
 - You will need to buy a domain for your website, which costs about 12$ per year. 
 - You will need to have a server machine. You can rent it from cloud providers with prices starting at 5$/month (sometimes even lower). Yes, you can run the whole app on a single machine. 
 
-There is even a community of people building online businesses, called [Indie Hackers](https://www.indiehackers.com). You can get there a lot of help. You can check there for examples of SaaS websites that are self-funded: [link to the list](https://www.indiehackers.com/products?businessModel=subscriptions&funding=self&revenueVerification=stripe&sorting=highest-revenue).
+There is even a community of people building online businesses, called [Indie Hackers](https://www.indiehackers.com). You can get a lot of help from community. You can check there examples of SaaS applications that are self-funded: [link to the list](https://www.indiehackers.com/products?businessModel=subscriptions&funding=self&revenueVerification=stripe&sorting=highest-revenue).
 
 In this series of posts, I would like to show you how to start your SaaS with Django and React from scratch. By the end of the tutorial, you will have Django + React boilerplate (a template code that can be reused to create a new SaaS). This boilerplate will be much different from existing boilerplates:
 - You will write it from scratch. You will be familiar with every part of the boilerplate code.
@@ -32,13 +32,13 @@ In this series of posts, I would like to show you how to start your SaaS with Dj
 - You should set a code repository for the project.
 - You will initialize Django and React projects.
 
-### What will be in the next post?
 
-- You will create user autentication in Django (with Django Rest Framework and Djoser package) in the [next post](/blog/token-based-authentication-django-rest-framework-djoser). 
+
+## Start SaaS with Django and React
 
 ![](starting_saas_with_django_react.jpg){:.image-border}
 
-## Prepare your development machine
+### Prepare your development machine
 
 You need to setup your machine (laptop or desktop) for development. You will need to have 3 things:
 
@@ -114,7 +114,7 @@ We will install Django package:
 pip install django
 ```
 
-Please take a look at Django version. We will need this to create `requirements.txt` file. Please add `requirements.txt` in `backend` directory with your Django version. In my case it was:
+Please take a look at Django version. We will need it to save in `requirements.txt` file. Please add `requirements.txt` in `backend` directory with your Django version. In my case it was:
 
 ```bash
 # content of backend/requirements.txt
@@ -137,9 +137,9 @@ cd server
 python manage.py runserver
 ```
 
-(Note: You can also run development server with `./manage.py runserver` command.)
+> **Note:** You can also run development server with `./manage.py runserver` command.
 
-Please enter [`127.0.0.1:8000`](http://127.0.0.1:8000) in your favourite browser and you should see a default Django welcome site.
+Please enter [127.0.0.1:8000](http://127.0.0.1:8000) in your favourite browser and you should see a default Django welcome site.
 
 [![Default Django welcome site](django_start_project.png){:.image-border}](django_start_project.png)
 
@@ -157,7 +157,7 @@ cd frontend
 npm start
 ```
 
-The above commands should initialize the React frontend code and run the development server at address: [`http://localhost:3000/`](http://localhost:3000/). You should see in the browser a spinning atom:
+The above commands should initialize the React frontend code and run the development server at address: [http://localhost:3000/](http://localhost:3000/). You should see in the browser a spinning atom:
 
 [![Default React welcome site](react_start_project.png){:.image-border}](react_start_project.png)
 
@@ -248,7 +248,7 @@ You can check the repository in the browser (in my case it will be [https://gith
 
 - The hardest part is to start and we already started!  
 - We have backend and frontend applications initialized. We are able to run development servers for both apps.
-- The code is manages in the code repository.
+- The project's code is managed in the code repository.
 
 ## What's next?
 

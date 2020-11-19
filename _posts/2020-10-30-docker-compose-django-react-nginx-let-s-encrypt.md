@@ -69,7 +69,7 @@ The `Dockerfile` is not executing any command, we will use for this purpose `wsg
 
 ### Docker entrypoint
 
-Please add a new file `docker/backend/wsgi-entrypoint.sh` and add execute rights to the file:
+Please add a new file `docker/backend/wsgi-entrypoint.sh` and add execute rights to the file (it is a bash script):
 
 ```bash
 chmod +x docker/backend/wsgi-entrypoint.sh
@@ -644,48 +644,215 @@ You need to set two variables in the script:
 - `staging=1` - is set to **test** the configuration first with **Let's encrypt staging environment**! It is important to not set `staging=0` before you are 100% sure that your configuration is correct. If you are sure, that all is set correctly, set `staging=0`. This is because there are limited number of retries to issue the certificate and you don't want to wait till they are reseted (one week). To read more about this, check [Let's encrypt rate limits docs](https://letsencrypt.org/docs/rate-limits/).
 
 
+We will use this script first with `staging=1`. We will test if web application is running correctly. If yes then we will issue production certificate and run the application with it.
+
+**Note:** You need to have your own domain in this tutorial. The Let's Encrypt certificates doesn't work with public IPs ([link to forum topic](https://community.letsencrypt.org/t/certificate-for-public-ip-without-domain-name/6082)).
+
+## Deploy to VPS
+
+I will use AWS to deploy the project. The application will be deployed to [`boilerplate.saasitive.com`](https://boilerplate.saasitive.com) address.
+
+We need to do below steps to deploy application:
+- start EC2 instance,
+- configure DNS,
+- copy code to EC2 instance,
+- issue certificate,
+- start docker-compose.
+
+
+#### Start EC2 instance
+
+First thing is to start EC2 instance. I'm using `t2.micro` instance (cant use `t2.nano` because of too low memory to build containers). Please launch new EC2 instance. I'm using `Ubuntu Server 18.04 LTS` as the image (the last image in the screenshot below):
+
+[![AWS Instance type](aws_instance_type.png){:.image-border}](aws_instance_type.png)
+
+After clicking select, please go with `t2.micro` instance type (the cost of running is 8.35$ per month). Click `Next: Configure Instance Details`. In configuration please click `Next` and stop on `Step 6: Configure Security Group`. Please add there rules to accept `HTTP` and `HTTPS` traffic (like in the image below):
+
+[![AWS security rules](aws_security.png){:.image-border}](aws_security.png)
+
+Click `Review and Launch` and then `Launch`. You should get the `*.pem` file for secure connection to instance. You can use existing key pair or generate the new one. My file is `boilerplate.pem`. After a few seconds you should see your instance running. Congratulations, you have a VPS running! Now, we will configure domain to point to our VPS.
+
+#### Configure DNS
+
+In instances view, please click on your instance and you should see `Public IPv4 address`. Please copy this address.
+
+Let's go to `Route 53` service in AWS to configure the DNS. I have there Hosted zone configured for [saasitive.com](https://saasitive) domain. I will add there two `type A` records. Please click on `Create record`. Then select `Simple routing`. Click `Next` and `Define simple record`. Please give the record name and route traffic to VPS IP, like in the image below:
+
+[![Route 53 configuration](route_53.png){:.image-border}](route_53.png)
+
+I want to have routing for:
+- `boilerplate.saasitive.com`
+- `www.boilerplate.saasitive.com`
+
+That's why I've added two records, one for `boilerplate` and one for `www.boilerplate`. Both pointing to the same IP.
+
+If you don't want to run application on subdomain, just point main domain to VPS IP.
+
+#### Copy code to VPS
+
+We need to have our application code in the VPS to run it. There are many ways to do it. I'm using `rsync` command. Here is how.
+
+Please select the instance (in EC2 instances list) and click `Connect` at the top of the website. There should be example how to connect to instance with SSH:
+
+```bash
+ssh -i "boilerplate.pem" ubuntu@ec2-your-ip.compute-1.amazonaws.com
+```
+
+Please remember to:
+- give correct permissions to `*.pem` file: ` chmod 400 boilerplate.pem`,
+- please replace the name `*.pem` file to yours.
+
+After ssh, you should be logged in the VPS. Let's install `docker` and create the `app` directory:
+
+```
+sudo snap install docker
+mkdir app
+```
+
+In the new console, please navigate to project directory and `rsync` it with directory in VPS:
+
+```bash
+# run locally in project main directory
+rsync -avz -progress -e "ssh -i boilerplate.pem" --exclude backend/venv --exclude frontend/node_modules . ubuntu@ec2-your-ip.compute-1.amazonaws.com:/home/ubuntu/app/
+```
+
+The above command sync the current directory (there is a `.` dot in the command!) with `home/ubuntu/app/` directory in the VPS.
+
+That's all! If you go to terminal with SSH connection to VPS and run `ls` command in `app` directory, you should see all your project files.
+
+#### Issue certificate
+
+Let's go to VPS SSH connection and go into `app` directory. In this directory, please first build `docker-compose` containers:
+
+```bash
+# run in VPS!
+cd app
+sudo docker-compose build
+```
+
+First, we will issue certificate from Let's encrypt staging environment.
+```bash
+# run in VPS! in app dir
+sudo ./init-letsencrypt.sh 
+```
+
+If successful, please stop all running containers and run the `docker-compose` in the background:
+```bash
+# run in VPS! in app dir
+sudo docker-compose down
+sudo docker-compose up --detach
+```
+
+You should be able to navigate to your website. Please go to web browser and enter your domain (or subdomain). In my case, I will go to [`https://boilerplate.saasitive.com`](https://boilerplate.saasitive.com). You should see warning message (depending on your browser) that will tell you that connection is insecure:
+
+[![Firefox insecure warning](firefox_warning.png){:.image-border}](firefox_warning.png)
+
+To see the website, you need to go into advanced options and accept the risk. After that, you should see the application:
+
+[![Not secure connection](not_secure.png){:.image-border}](not_secure.png)
+
+We need to issue production certificate. Let's go to VPS and stop containers:
+
+```bash
+# run in VPS! in app dir
+# stop containers
+sudo docker-compose down
+```
+
+You need to edit `init-letsencrypt.sh` file and set `staging=0`. Then run the script:
+
+```bash
+# run in VPS! in app dir
+sudo ./init-letsencrypt.sh
+```
+
+Once again, stop containers and run in the background:
+
+```bash
+# run in VPS! in app dir
+sudo docker-compose down
+sudo docker-compose up --detach
+```
+
+Let's refresh the web browser:
+
+[![Secure connection with HTTPS to Django+React](security_boilerplate.png){:.image-border}](security_boilerplate.png)
+
+Great, the application is running with `HTTPS`! What is more, if you enter URL with `http://` you will be redirected to `https://`! Nice!
+
+---
+
+Is it working correctly? Please try to login or signup ...
+
+Ups, there is some error ...
+
+#### Edit ALLOWED_HOSTS
+
+One more thing, we need to add `boilerplate.saasitive.com` and `www.boilerplate.saasitive.com` to the `ALLOWED_HOSTS` in Django `settings.py` file. One more thing, there is a `DEBUG` flag in `settings.py`. Please set it to `False`.
 
 ```py
 # backend/server/server/settings.py
 
 # ...
+DEBUG=False
 
-DEBUG = False
-
-ALLOWED_HOSTS = ["0.0.0.0"]
-
+ALLOWED_HOSTS = ['0.0.0.0', 'boilerplate.saasitive.com', 'www.boilerplate.saasitive.com']
 # ...
-
-MEDIA_URL = '/media/'
-STATIC_URL = '/django_static/' 
-STATIC_ROOT = BASE_DIR / 'django_static'
 ```
 
-
-
-
+Save the file and sync the code on VPS.
 
 ```bash
-chmod +x docker/backend/wsgi-entrypoint.sh
+# sync code
+rsync -avz -progress -e "ssh -i boilerplate.pem" --exclude backend/venv --exclude frontend/node_modules . ubuntu@ec2-your-ip.compute-1.amazonaws.com:/home/ubuntu/app/
 ```
 
+On VPS machine, please stop docker, build it and re-run in the background:
 
+```bash
+# run in VPS! in app dir
 
-```bash
-docker-compose -f docker-compose-dev.yml build
-docker-compose -f docker-compose-dev.yml up
-```
-```bash
-docker-compose -f docker-compose-dev.yml up --build
-```
-```bash
+# stop containers
 sudo docker-compose down
+
+# build containers
+sudo docker-compose build
+
+# run containers
+sudo docker-compose up --detach
 ```
 
+Please try to login after update:
+
+[![Success app is running](success.png){:.image-border}](success.png)
+
+You can try to create new users and login for example from your phone browser. The application will be working!!! :)
+
+### Commit changes to the repository code
+
+Please remember to commit changes to the repository:
+
+```bash
+# in the main project dir
+
+git add docker-compose*
+git add init-letsencrypt.sh
+git add docker
+
+git commit -am "add docker-compose"
+git push
 ```
-sudo tar -czvf certbot.tar.gz docker/nginx/certbot
 
-```
+## Summary
+
+- We've deployed application to AWS EC2 instance with docker-compose.
+- There is still many things to be added in the project. 
+- We need to better handle configuration variables and `SECRET_KEY` in Django code. We will add this in the future post with [python-decouple](https://github.com/henriquebastos/python-decouple/) package.
+- We need to switch database engine to PostgreSQL.
+- After every update in the application, we will need to run a set of commands. This can be boring and error-prone. That's why we will need to add Continous Integration to our project. This can be added in many different ways, I will try to figure out the simplest approach. I'm open to your suggestion.
+- It is important to remember that if EC2 machine is restarted, then new IP address is assigned. So there is a need to reconfigure DNS again. This can be prevented with static IP address. But, you need to pay for it additionally. I'm not setting the static IP. I'm planning to write custom blue/green deployment script (of course in the future post).
 
 
-rsync -avz -progress -e "ssh -i ~/Downloads/boilerplate.pem" ubuntu@ec2-100-26-177-134.compute-1.amazonaws.com:/home/ubuntu/app/certbot.tar.gz .certbot
+## What's next?
+
+In the next article we will add email verification functionality. 
