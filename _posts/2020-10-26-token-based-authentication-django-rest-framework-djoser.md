@@ -12,7 +12,7 @@ date: 2020-10-26
 type: blog
 ---
 
-We will add token-based authentication REsT API with Django Rest Framework and Djoser. The [Django Rest Framework](https://www.django-rest-framework.org/) is a package for faster building REST APIs with Django. The [Djoser](https://djoser.readthedocs.io) provides basic views to handle authentication actions such as create user, login, logout.
+In this article, we will add token-based authentication REST API with Django Rest Framework and Djoser. The [Django Rest Framework](https://www.django-rest-framework.org/) is a package for faster building REST APIs with Django. The [Djoser](https://djoser.readthedocs.io) provides basic views to handle authentication actions such as create user, login, logout.
 
 We are going to use a code from previous [post](/tutorial/react-routing-components-signup-login) (it has tag [v2](https://github.com/saasitive/django-react-boilerplate/tree/v2)). We will write only backend code (authentication REST API) in this post. You can find the details about frontend code in the next post: [React Token Based Authentication to Django Backend](/tutorial/react-token-based-authentication-django).
 
@@ -39,9 +39,9 @@ What is the difference between them?
 - Token-based authentication requires database look up on every request to check if token is valid.
 - JWT is using cryptography to validate the token - no database queries.
 - Token-based authentication is using the same token for all sessions.
-- JWT is using different token for each session (even if the same user is logged in in many devices).
+- JWT is using different token for each session (even if the same user is logged from many devices).
 - Token-based tokens doesn't have a timestamp for expiration time. 
-- JWT tokens expire after selected time period and needs to be refreshed.
+- JWT tokens expire after selected time period and need to be refreshed.
 - For Token-based authentication you can force user to logout by changing the token in the database.
 
 Both authentication methods have pros and cons. In this post, I will use Token-based authentication. It doesn't need to be periodically refreshed and because of this, it will be much easier to use it in the frontend. If you would like to see a JWT post, please let me know by filling this [form](https://forms.gle/rgAG9gkhUEH2wUVt5).
@@ -49,7 +49,7 @@ Both authentication methods have pros and cons. In this post, I will use Token-b
 
 ## Install DRF and Djoser
 
-Before install please go to `backend` directory and activate the environment:
+Please go to `backend` directory and activate the environment:
 
 ```bash
 # activate environment
@@ -129,7 +129,7 @@ DJOSER = {
 
 We need to add URL endpoints to our backend. The URLs will be provided by the Djoser package. There is a list of all available endpoints in Djoser [documentation](https://djoser.readthedocs.io/en/latest/getting_started.html#available-endpoints).
 
-In this post, we will use following endpoints:
+In this post, we will use the following endpoints:
 - `/users/` - to signup a new user,
 - `/users/me/` - to get user information,
 - `/token/login/` - to get token,
@@ -137,9 +137,9 @@ In this post, we will use following endpoints:
 
 (Endpoints for account activation and password rest will be used in the future post.)
 
-We can add endpoints directly into `backend/server/server/urls.py` file. However, in this series of post we would like to build a complete boilerplate for creating a SaaS, because of this let's add a Django application `accounts`. It will be needed in the future, for example for account activation or payments. For now, we will just fill `urls.py` file.
+We can add endpoints directly into `backend/server/server/urls.py` file. However, in this series of post we would like to build a complete boilerplate for creating SaaS applications, because of this let's add a Django app `accounts`. It will be needed in the future, for example for account activation or payments. For now, we will just fill `urls.py` file.
 
-To add new application in Django please run following:
+To add new application in Django please run the following commands:
 
 ```bash
 # please run in backend/server directory
@@ -148,7 +148,7 @@ mkdir apps
 mv accounts apps
 ```
 
-I made additional directory `apps` to keep all applications in it. It will help to keep the whole project well organized (I like it that way).
+I made the additional directory `apps` to keep all applications in it. It will help to keep the whole project well organized (I like it that way).
 
 Please add a new file `urls.py` in `backend/server/apps/accounts` with the following content:
 
@@ -181,6 +181,7 @@ urlpatterns += accounts_urlpatterns # add URLs for authentication
 ```
 
 Your backend directory structure should look like below:
+
 ```bash
 .
 ├── apps
@@ -252,17 +253,19 @@ Let's start the server:
 ./manage runserver
 ```
 
-Please go to [`http://127.0.0.1:8000`](http://127.0.0.1:8000) and you should see:
+Please go to [http://127.0.0.1:8000](http://127.0.0.1:8000) and you should see:
 
 [![Django page not found error](django_page_not_found.png){:.image-border}](django_page_not_found.png)
 
-It is expected because we don't have any endpoint at `/`. Please go to [`http://127.0.0.1:8000/api/v1/users`](http://127.0.0.1:8000/api/v1/users):
+> Don't be afraid of errors. Just read their message and try to understand how to fix them.
+
+It is expected because we don't have any endpoint at `/`. Please go to [http://127.0.0.1:8000/api/v1/users](http://127.0.0.1:8000/api/v1/users):
 
 [![Django page not found error](django_create_user.png){:.image-border}](django_create_user.png)
 
 Please fill the form at the bottom of the page and click `POST`. This will create a new user. The email field is not required, you can leave it blank.
 
-Please change the url to [`http://127.0.0.1:8000/api/v1/token/login`](http://127.0.0.1:8000/api/v1/token/login):
+Please change the url to [http://127.0.0.1:8000/api/v1/token/login](http://127.0.0.1:8000/api/v1/token/login):
 
 [![DRF login](drf_login.png){:.image-border}](drf_login.png)
 
@@ -278,7 +281,7 @@ The endpoint returned the token:
 }
 ```
 
-We will need to include this token in each request that requires authentication. Please try to get the user information with [`http://127.0.0.1:8000/api/v1/users/me/`](http://127.0.0.1:8000/api/v1/users/me/) you should see:
+We will need to include this token in each request that requires authentication. Please try to get the user information with [http://127.0.0.1:8000/api/v1/users/me/](http://127.0.0.1:8000/api/v1/users/me/) you should see:
 
 [![DRF Authentication credentials not provided](drf_authentication_credentials_not_provided.png){:.image-border}](drf_authentication_credentials_not_provided.png)
 
@@ -288,7 +291,7 @@ The browsable DRF API doesn't support authorization with token, so there are 2 w
 - add session based authentication for testing (I don't like it),
 - add free browser plugin to inject token in request's header (that's my option).
 
-I'm using [ModHeader](https://bewisse.com/modheader/) plugin. It is availble for many browsers (Chrome, Firefox, Opera, Edge).
+I'm using free [ModHeader](https://bewisse.com/modheader/) plugin. It is availble for many browsers (Chrome, Firefox, Opera, Edge).
 
 [![Set token in ModHeader](modheader_token.png){:.image-border}](modheader_token.png)
 
@@ -307,7 +310,7 @@ The endpoint returns the JSON with user information:
 }
 ```
 
-Please go to [`http://127.0.0.1:8000/api/v1/token/logout`](http://127.0.0.1:8000/api/v1/token/logout) to logout. You should click `POST` button to logout. After that, please try to login again (remember to uncheck header in ModHeader plugin). You should get a different `auth_token` than for the first time. The Djoser package is creating a new token at login and detroying the token after logout. This is a very nice feature for security. If someone steal your `auth_token` (for example, you forgot to logout in the public computer) then just logout (on different device) and token will be invalid.
+Please go to [http://127.0.0.1:8000/api/v1/token/logout](http://127.0.0.1:8000/api/v1/token/logout) to logout. You should click `POST` button to logout. After that, please try to login again (remember to uncheck header in ModHeader plugin). You should get a different `auth_token` than for the first time. The Djoser package is creating a new token at login and detroying the token after logout. This is a very nice feature for security. If someone steal your `auth_token` (for example, you forgot to logout in the public computer) then just logout (on different device) and token will be invalid.
 
 ### Commit changes to the repository
 
@@ -323,15 +326,15 @@ git push
 
 ## Summary
 
-- We've created authentication REST API.
+- We've created authentication REST API with Django Rest Framework.
 - User is able to create account with username and password.
-- There is login and logout endpoints available. And endpoint with user information.
+- There is login and logout endpoints available, and endpoint with user information.
 - The user activation and password reset functionality will be presented in the future post.
 
 **Note:** In this post, we do not cover the CORS headers problem. It will be covered in the next post.
 
 ## What's next?
 
-We will write a React code that use REST API for authentication. What is more we will add authentication redirects in React.
+We will write a React code that use REST API for authentication and CORS handling. What is more, we will add authentication redirects in React.
 
 Next article: [React Token Based Authentication to Django Backend](/tutorial/react-token-based-authentication-django).

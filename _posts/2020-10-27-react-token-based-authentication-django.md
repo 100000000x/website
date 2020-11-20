@@ -10,7 +10,7 @@ date: 2020-10-27
 type: blog
 ---
 
-We will write React code to interact with token-based authentication REST API from the Django backend. We will use code from the previous post: [Token Based Authenitcation with Django Rest Framework and Djoser](/tutorial/token-based-authentication-django-rest-framework-djoser) (code with tag [v3](https://github.com/saasitive/django-react-boilerplate/tree/v3))
+In this post, we will write React code to interact with token-based authentication REST API from the Django backend. We will use code from the previous post: [Token Based Authenitcation with Django Rest Framework and Djoser](/tutorial/token-based-authentication-django-rest-framework-djoser) (code with tag [v3](https://github.com/saasitive/django-react-boilerplate/tree/v3))
 
 This post will be splitted into following parts:
 
@@ -18,7 +18,7 @@ This post will be splitted into following parts:
 - Add Cross-Origin Resource Sharing (CORS) headers to Django server responses. It will be required because we will make requests from other port than server.
 - Add Login actions and reducer.
 
-In this tutorial we will use [`axios`](https://github.com/axios/axios) package for doing server requests from React to Django server. 
+In this tutorial we will use [`axios`](https://github.com/axios/axios) library for doing server requests from React to Django server. 
 
 ## Add Signup Actions and Reducer
 
@@ -39,7 +39,7 @@ export const CREATE_USER_ERROR = "CREATE_USER_ERROR";
 
 There are defined three types of actions:
 
-- `CREATE_USER_SUBMITTED`, which means that the request to create a new user was send and we are waiting for server response. After this action is dispatched, we should disable `Signup` button till server responded.
+- `CREATE_USER_SUBMITTED`, which means that the request to create a new user was send and we are waiting for server response. After this action type is dispatched, we should disable `Signup` button till server responded.
 - `CREATE_USER_SUCCESS` - the action is called after `HTTP 201 CREATED` response from server, which means that user was successfully created.
 - `CREATE_USER_ERROR` - the action is called when there was an error during creation of the user and it was not created.
 
@@ -106,13 +106,13 @@ const initialState = {
 };
 ```
 
-The `initialState` defines what attributes will be in our store. It also set the inital (default) values which are set at the beginning of application run. We will have following variables in the `Signup` components:
+The `initialState` defines what attributes will be in our store. It also set the inital values which are set at the beginning of application run. We will have following variables in the `Signup` components:
 
-- `usernameError` is the string that will be diplayed if there is an error with username. The default is set to empty string.
-- `passwordError` is the string with error message displayed if the password field is invalid.
-- `isSubmitted` informs the component that create action was submitted. If `isSubmitted = true` the `Signup` button should be disabled (we don't accept next signup requests untill the response from server).
+- `usernameError` - the string that will be diplayed if there is an error with username. The initial value is set to empty string.
+- `passwordError` - the string with error message displayed if the password field is invalid.
+- `isSubmitted` - informs the component that create action was submitted. If `isSubmitted = true` the `Signup` button should be disabled (we don't accept next signup requests untill the response from server).
 
-There is a big `switch` statement in the `signupReducer` with separate `case` for each action type. Each action type define its own way how to change the selected state of the application. Please remember to add `default` case which will just return the current state. That's all, we have a reducer!
+There is a big `switch` statement in the `signupReducer` with separate `case` for each action type. Each action type defines its own way how to change the selected state of the application. Please remember to add `default` case which will just return the current state. That's all, we have a reducer!
 
 We need to add a signup reducer to the root reducer in `frontend/src/Reducer.js` (the `rootReducer` is connected to our store in method `createStore()` in the `frontend/src/Root.js` file):
 
@@ -135,7 +135,7 @@ export default createRootReducer;
 
 Before defining actions we need to install one more (maybe two) packages. We need a package for sending requests to the server. I'm using [`axios`](https://github.com/axios/axios) package.
 
-One more package, that is optional, I like to add toast notifications. For this I'm using [`react-toastify`](https://github.com/fkhadra/react-toastify). It is optional and you can add a different way to display notifications.
+One more package, that is optional. I like to add toast notifications. For this I'm using [`react-toastify`](https://github.com/fkhadra/react-toastify). It is optional and you can add a different way to display notifications.
 
 The package installation command:
 
@@ -221,12 +221,12 @@ export const signupNewUser = userData => dispatch => {
 };
 ```
 
-There is only one action `signupNewUser` in the `SignupActions.js`. It sends `POST` request to server (at endpoint `/api/v1/users/`) with `userData`. It defines what to do with server response:
+There is only one action `signupNewUser` in the `SignupActions.js`. It sends `POST` request to the server (at endpoint `/api/v1/users/`) with `userData`. It defines what to do with server response:
 
-- If success then green toast is displayed and `CREATE_USER_SUCCESS` is dispatched.
-- In the case of error, it dispatches `CREATE_USER_ERROR` and show red toast.
+- If success, then green toast is displayed and `CREATE_USER_SUCCESS` is dispatched.
+- In the case of the error, it dispatches `CREATE_USER_ERROR` and show red toast.
 
-Please take a look how the error response was handled. We need to handle several types of errors. You can take a look at axios [documentation](https://github.com/axios/axios#handling-errors) about handling the errors.
+Please take a look on how the error response was handled. We need to handle several types of errors. You can take a look at axios [documentation](https://github.com/axios/axios#handling-errors) about handling the errors.
 
 ### Add Action and Reducer in the Signup Component
 
@@ -347,15 +347,15 @@ export default connect(mapStateToProps, {
 
 ```
 
-Ok, let's go to [`https://localhost:3000/signup`](https://localhost:3000/signup) and just click `Signup` without filling username and password. You should get error toast with message: "Request failed with status code 404"
+Ok, let's go to [https://localhost:3000/signup](https://localhost:3000/signup) and just click `Signup` without filling username and password. You should get error toast with message: "Request failed with status code 404"
 
 [![request failed with 404](request_failed_404.png){:.image-border}](request_failed_404.png)
 
-What's going on? To check where is the problem, please open developer tools in your browser and click `Signup` when **Network** tab is open. Please take a look at the requests. There should be a signup request with `404` error, similar to the image below:
+What's going on? Where is the problem? Please open developer tools in your browser and click `Signup` when **Network** tab is open. Please take a look at the requests. There should be a signup request with `404` error, similar to the image below:
 
 [![request failed with 404 show in console](request_failed_404_console.png){:.image-border}](request_failed_404_console.png)
 
-Acha, we were doing requests to the `http://localhost:3000/api/v1/users` endpoint. This is wrong, because our django server is running on `http://127.0.0.1:8000` (`localhost` and `127.0.0.1` are pointing to the same, but I keep the naming as they are in each framework). We need to change the `baseURL` in `axios` configuration. We will do this in `frontend/src/App.js` file:
+We were doing requests to the `http://localhost:3000/api/v1/users` endpoint. This is wrong, because our Django server is running on `http://127.0.0.1:8000` (`localhost` and `127.0.0.1` are pointing to the same, but I keep the naming as they are in each framework). We need to change the `baseURL` in `axios` configuration. We will do this in `frontend/src/App.js` file:
 
 ```jsx
 // frontend/src/App.js
@@ -371,7 +371,7 @@ OK, let's try again to signup a new user (no need to fill the form, just click t
 
 [![Cross-Origin Request Blocked](request_cors.png){:.image-border}](request_cors.png)
 
-There is error message that request was blocked with reason that CORS header `Access-Control-Allow-Origin` is missing. What is CORS? CORS - Cross-Origin Resource Sharing - it is a mechanism that restricts which resources can be accessed from another domain. As I wrote ealier the `localhost` and `127.0.0.1` are the same, BUT our django server is running on `8000` port and the frontend application is running on port `3000` - the difference. We need to allow the frontend application to access the django server resources. How to do this?
+There is an error message that request was blocked with a reason that CORS header `Access-Control-Allow-Origin` is missing. What is CORS? CORS - Cross-Origin Resource Sharing - it is a mechanism that restricts which resources can be accessed from another domain. As I wrote ealier the `localhost` and `127.0.0.1` are the same, BUT our django server is running on `8000` port and the frontend application is running on port `3000` - thus the difference. We need to allow the frontend application to access the django server resources. How to do this?
 
 ## Add CORS in Django
 
@@ -382,6 +382,7 @@ pip install django-cors-headers
 ```
 
 Please remember to update `backend/requirements.txt` file:
+
 ```bash
 # backend/requirements.txt
 django_cors_headers==3.5.0 # add new package
@@ -419,7 +420,7 @@ Please run the Django server again and check what will happend if you click `Sig
 
 [![Django signup errors](signup_errors.png){:.image-border}](signup_errors.png)
 
-If you see the screen like in the image above then everything works well! We got the response from the server that username and password fields can't be blank (CORS is working!). Let's fill the form with correct values and we will have the first user created! :)
+If you see the screen like in the image above, then everything works well! We got the response from the server that username and password fields can't be blank (CORS is working!). Let's fill the form with correct values and we will have the first user created! :)
 
 [![Django signup success](signup_successfull.png){:.image-border}](signup_successfull.png)
 
@@ -427,9 +428,9 @@ If you see the screen like in the image above then everything works well! We got
 
 We need to add three files in the `frontend/src/components/login`:
 
-- `LoginTypes.js` (with action types definitions),
-- `LoginReducer.js` (with switch-case implementation how to change the state),
-- `LoginActions.js` (with actions implementation).
+- `LoginTypes.js` - with action types definitions,
+- `LoginReducer.js` - with `switch-case` implementation how to change the state,
+- `LoginActions.js` - with functions to dispatch actions.
 
 The `frontend/src/components/login/LoginTypes.js` with login actions:
 
@@ -509,15 +510,15 @@ const initialState = {
 
 - `isAuthenticated` variable will give us information if user is authenticated, it will be needed in displaying components that are available only for authorized users,
 - `user` - it is an object that will store information about the current user,
-- `token` - it is value of `auth_token`, it will be set after login.
+- `token` - it is a value of `auth_token`, it will be set after login.
 
 There are defined three types of actions:
 
 - `SET_TOKEN` - it will be dispatched after successful login.
-- `SET_CURRENT_USER` - it will set the `user` obejct in the state. It will be called after successful request to `/api/v1/users/me/` endpoint.
+- `SET_CURRENT_USER` - it will set the `user` obejct in the store. It will be called after successful request to `/api/v1/users/me/` endpoint.
 - `UNSET_CURRENT_USER` - will reset the state by setting its initial value.
 
-Now it's time to add our actions in `LoginActions.js`. There is a full code listing with all actions, I will go into details of each function later.
+Now, it's time to add our actions in `LoginActions.js`. There is a full code listing with all actions, I will go into details of each function below.
 
 ```jsx
 // frontend/src/components/login/LoginActions.js
@@ -646,7 +647,7 @@ The `login()` function is a `POST` request to `/api/v1/token/login` endpoint. Th
 
 In the case of successful response:
 - The `auth_token` is send in the `reponse.data`. We set this token in request headers in `axios` configuration (it's done by calling `setAxiosAuthToken()`). 
-- What is more, the `setToken()` function is called which saves the token in the `localStorage`. It will be needed if we want to refresh the website but don't want to force the user to login again to be authenticated.
+- What is more, the `setToken()` function is called. It saves the token in the `localStorage`. It will be needed if we want to refresh the website but don't want to force the user to login again to be authenticated.
 - The last thing after successful reponse is to dispatch `getCurrentUser()` function that will request user details. For now, as user details we have only `username` and `email` but later we will add there more information, for example if user is subscribed to paid plan. 
 
 In the case of login error:
@@ -703,7 +704,7 @@ export const getCurrentUser = redirectTo => dispatch => {
 
 #### `setCurentUser(user, redirectTo)`
 
-This function set the `user` variable in the `localStorage` and in the `auth` state (in the store). If the variable `redirectTo` is not empty, then a routing to its URL is dispatched (it is using `push` from `connected-react-router` package). 
+This function set the `user` variable in the `localStorage` and in the `auth` store. If the variable `redirectTo` is not empty, then a routing to its URL is dispatched (it is using `push` from `connected-react-router` library). 
 
 ```jsx
 export const setCurrentUser = (user, redirectTo) => dispatch => {
@@ -721,7 +722,7 @@ export const setCurrentUser = (user, redirectTo) => dispatch => {
 
 #### `setToken(token)`
 
-This function set token in request header (`axios` configuration). It also set `token` in the `localStorage` and `auth` store (`SET_TOKEN` action).
+This function set token in request header (in the `axios` configuration). It also set `token` in the `localStorage` and `auth` store (`SET_TOKEN` action).
 
 ```jsx
 export const setToken = token => dispatch => {
@@ -736,7 +737,7 @@ export const setToken = token => dispatch => {
 
 #### `unsetCurrentUser()`
 
-It removes the token in `axios` configuration. It also clears the `localStorage` data and `auth` store.
+It removes the token in the `axios` configuration. It also clears the `localStorage` data and the `auth` store.
 
 ```jsx
 export const unsetCurrentUser = () => dispatch => {
@@ -751,17 +752,17 @@ export const unsetCurrentUser = () => dispatch => {
 
 #### logout()
 
-The `logout()` function send `POST` request to `/api/v1/token/logout/` endpoint;
+The `logout()` function send `POST` request to `/api/v1/token/logout/` endpoint.
 
 In the case of success:
 
-- It clears user data and token in the `loclStorage` and `auth` store.
-- It redirects the view to `/` URL (which in out case will show `Home` component).
+- It clears user data and token in the `loclStorage` and the `auth` store.
+- It redirects the view to `/` URL (which in our case will display `Home` component).
 - It shows the success toast.
 
 In the case of error response:
 
-- It clears user data and token in the `localStorage` and `auth` store.
+- It clears user data and token in the `localStorage` and the `auth` store.
 - It shows the error toast.
 
 ```jsx
@@ -780,15 +781,15 @@ export const logout = () => dispatch => {
 };
 ```
 
-The `logout()` function won't be used in `Login` component, but for consistency, I've added it with login related methods.
+The `logout()` function won't be used in `Login` component, but for consistency, I've added it with login related functions.
 
 ## Connect action and store in the Login component
 
-Let's add `login()` action and `auth` store in the component.
+Let's add `login()` action and the `auth` store in the component.
 
 - We will need to update imports,
-- We will need to call `login()` in `onLoginClick()` method,
-- We will need to connect action and `auth` store to `Login` component.
+- We will need to call `login()` in `onLoginClick()` function,
+- We will need to connect action and the `auth` store to the `Login` component.
 
 ```jsx
 // frontend/src/components/login/Login.js
@@ -878,15 +879,15 @@ export default connect(mapStateToProps, {
 })(withRouter(Login));
 ```
 
-**Note:** I removed `<FormControl.Feedback type="invalid">` from the `Login` form. It is for simplicity. 
+**Note:** I removed `<FormControl.Feedback type="invalid">` from the `Login` form. It is for simplicity.
 
-OK, we are ready to login! But before, please check how the view will behaves in the case of wrong credentials. You should see errors displayed with toasts.
+OK, we are ready to login! But before, please check how the view will behave in the case of wrong credentials. You should see errors displayed with error (red) toast.
 
-Let's login with correct credentials. Please fill the form with and click `Login`. If successful, you should be redirected to the `Dashboard` view. It is worth to check the `localStorage` after the successful login.
+Let's login with correct credentials. Please fill the form and click `Login`. If successful, you should be redirected to the `Dashboard` view. It is worth to check the `localStorage` after the successful login.
 
 [![localStorage after login](login_localStorage.png){:.image-border}](login_localStorage.png)
 
-You should see `token` and `user` in the `localStorage`. If you for example refresh the website or open a website in the new tab the values will be sill there. Because of this, we can re-use them for authentication.
+You should see `token` and `user` in the `localStorage`. Please try to refresh the website or open a website in the new tab, the values in `localStorage` will be sill there. Because of this, user doesn't need to login again.
 
 ## Load localStorage token and user 
 
@@ -944,7 +945,7 @@ export const isEmpty = value =>
   (typeof value === "string" && value.trim().length === 0);
 ```
 
-The logic behind this check is simple. If there is a `token` key in `localStorage`, dispatch `setToken()` with `token` value from the storage. The same for `user` data. Because of this, after user refresh the website or open website in a new tab, the values from the `localStorage` will be loaded, added to the store, and the `token` will be set in the response header in the `axios` configuration.
+The logic behind this check is simple. If there is a `token` key in the `localStorage`, dispatch `setToken()` with `token` value from the storage. The same for `user` data. Because of this, after user refresh the website or open website in a new tab, the values from the `localStorage` will be loaded, added to the store, and the `token` will be set in the response header in the `axios` configuration.
 
 ### Add changes to the repository
 
@@ -964,10 +965,10 @@ The code for this post is available at GitHub repository [saasitive/django-react
 
 ## Summary
 
-- We added signup actions and reducer.
+- We've added signup functions and reducer.
 - We set up CORS in the backend.
-- We added login actions and reducer.
-- The authentication data (`token` and `user`) are saved in `localStorage`. They can be loaded after website refresh or opening website in a new tab.
+- We added login functions and reducer.
+- The authentication data (`token` and `user`) are saved in the `localStorage`. They can be loaded after website refresh or opening website in a new tab.
 
 ## localStorage vs cookies httpOnly
 
@@ -976,20 +977,20 @@ There is a lot of discussion over the internet on how to store the `auth_token` 
 - Reddit post [Local Storage vs Cookie [Authentication Tokens]](https://www.reddit.com/r/reactjs/comments/cubfsa/local_storage_vs_cookies_authentication_tokens/),
 - GitHub discussion [security: pulling tokens from localStorage is not secure](https://github.com/apollographql/apollo-feature-requests/issues/149)
 
-Here is my opinion.
+Here is my opinion:
 
 - The most secure option is to not store any security data on the client-side. Just force a user to login every time she refreshes the website or opens a website in a new tab.
-- In the case of XSS (Cross Site Scripting) attack the values from the `localStorage` can be read. That's true. If we have token set in the cookies with `httpOnly` setting then in the case of XSS they can not be read. Also true. Does it mean that cookies with `httpOnly` are better than `localStorage`? Can't say that. 
+- In the case of XSS (Cross Site Scripting) attack the values from the `localStorage` can be read. That's true. If we have token set in the cookies with `httpOnly` setting then in the case of XSS they can not be read. Also true. Does it mean that cookies with `httpOnly` are better than `localStorage`? Can't say that. Does it mean that `httpOnly` cookies prevent XSS? Absolutely, no!
 - First of all, React has built-in mechanism against XSS attacks. It will render raw HTML only if you explicitly ask for it with [`dangerouslySetInnerHTML`](https://reactjs.org/docs/dom-elements.html#dangerouslysetinnerhtml).
 - If there will be XSS, then bad actor can read `token` from `localStorage` but what can he do with it? He can send it to his server or use it for malicious requests. We can protect the application against loading unknow scripts from unknown sources with Content Security Policy (CSP) (for sure I will write about it in the future posts). 
 - OK, so there is still option to do malicious requests. This can be done for both types of data storing: `localStorage` and `cookies`.
-- What is more, if cookies with `httpOnly` are used, malicious requests can be done from other sources (the Cross-Site Request Forgery). Such an attack doesn't apply in the case of `localStorage`.
+- What is more, if cookies with `httpOnly` are used, malicious requests can be done from other sources (the Cross-Site Request Forgery). Such an attack doesn't apply in the case of the `localStorage`.
 - The easiest solution to protect against malicious requests is to logout (in our case). In this tutorial, at logout the token is destroyed, so it can't be used anymore to authenticate requests.
 - To summarize, in the case of XSS, there is no rescue (cookies wont help much). Cookies enable one more type of attack: CSRF.
-- In my opinion, the approach that I show you is as secure.
+- In my opinion, the approach that I show you is secure (as it can be).
 
 ## What's next?
 
-We will create views that require autnetication to be displayed. In this post, user can see the `Dashboard` component even if she is not logged in. We will write `AuthenticatedComponent` that will check if user is authenticated. If yes then it will show the component, otherwise it will redirect user to login view.
+We will create views that require authentication to be displayed. In this post, user can see the `Dashboard` view even if she is not logged in. We will write `AuthenticatedComponent` that will check if user is authenticated. If yes, then it will show the component, otherwise it will redirect user to login view.
 
 Next article: [React Authenticated Component](/tutorial/react-authenticated-component)

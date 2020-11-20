@@ -9,7 +9,7 @@ date: 2020-10-25
 type: blog
 ---
 
-We will create a user interface in React for authentication (Signup and Login views). Components will not performa any actions (they won't be communicating with backend, yet). We will use code from previous post: [Starting SaaS with Django and React](/tutorial/django-react-boilerplate-saas) (code with tag [v1](https://github.com/saasitive/django-react-boilerplate/tree/v1)). In the next posts we will create an authentication in [Django backend](/tutorial/token-based-authentication-django-rest-framework-djoser) and [in React frontend](/tutorial/react-token-based-authentication-django).
+In this post, we will create a user interface in React for authentication (Signup and Login views). Components will not perform any actions (they won't be communicating with the backend, yet). We will use code from the previous post: [Starting SaaS with Django and React](/tutorial/django-react-boilerplate-saas) (code with tag [v1](https://github.com/saasitive/django-react-boilerplate/tree/v1)). In the next posts, we will create an [authentication REST API in Django](/tutorial/token-based-authentication-django-rest-framework-djoser) and [provide actions in the frontend](/tutorial/react-token-based-authentication-django).
 
 What will we do in this post:
 
@@ -40,7 +40,7 @@ npm install react-bootstrap bootstrap
 npm install react-router-dom
 ```
 
-The `react-router-dom` [documentation](https://reactrouter.com/web/guides/quick-start) (if you need to check it). After installation please run again the dev server (`npm start`). You can also check the `frontend/package.json` file, the newly installed packages should be added there.
+(The `react-router-dom` [documentation](https://reactrouter.com/web/guides/quick-start), if you need to check it). After installation please run again the dev server (`npm start`). You can also check the `frontend/package.json` file, the newly installed packages should be added there.
 
 You need to add `bootstrap.css` import in `frontend/src/index.js` file.
 
@@ -52,9 +52,9 @@ import "bootstrap/dist/css/bootstrap.css";
 // ...
 ```
 
-### Let's first clean our React app.
+### Let's clean our React app
 
-Please remove the `frontend/src/App.css` file and remove all content in `frontend/src/index.css` (we will keep the file, maybe it will be needed in the future). Please also delete files:
+The React app was generated with standard starting script. It has code that we will not need. Please remove the `frontend/src/App.css` file and remove all content in `frontend/src/index.css` (we will keep the file, maybe it will be needed in the future). Please also delete files:
 
 - `frontend/public/logo192.png`
 - `frontend/public/logo512.png`
@@ -96,7 +96,7 @@ class App extends Component {
 export default App;
 ```
 
-The development server should refresh the [`http://localhost:3000`](http://localhost:3000) website and display "Hi!".
+The development server should refresh the [http://localhost:3000](http://localhost:3000) website and display "Hi!".
 
 OK, let's add `components` directory in `frontend/src` and `Home.js` file in it.
 
@@ -247,12 +247,12 @@ class App extends Component {
 export default App;
 ```
 
-OK, it is time to test it! You can enter in the browser different paths and check if correct components are displayed. For example, please enter [`http://localhost:3000/login`](http://localhost:3000/login) and you should see the `Login` component. The  [`http://localhost:3000/dashboard`](http://localhost:3000/dashboard) should show a `Dashboard` component.
+OK, it is time to test it! You can enter in the browser different paths and check if correct components are displayed. For example, please enter [http://localhost:3000/login](http://localhost:3000/login) and you should see the `Login` component. The  [http://localhost:3000/dashboard](http://localhost:3000/dashboard) should show a `Dashboard` component.
 
 Maybe you wonder what is the difference between `Route path` and `Route exact path` (used for `Home`). You can try to check it yourself:
 
-- please enter: [`http://localhost:3000/signup/bla/bla/bla`](http://localhost:3000/signup/bla/bla/bla)
-- please enter: [`http://localhost:3000/bla/bla/bla`](http://localhost:3000/bla/bla/bla)
+- please enter: [http://localhost:3000/signup/bla/bla/bla](http://localhost:3000/signup/bla/bla/bla)
+- please enter: [http://localhost:3000/bla/bla/bla](http://localhost:3000/bla/bla/bla)
 
 The first one will show you `Signup` component, while the second one will show a blank window. The first URL will match the `Signup` route. The second one won't have match. If you would like to have a default match for any URL you can add the default route:
 
@@ -294,7 +294,7 @@ Your fronted code structure should look like below after this part of the post:
 
 ### React components
 
-Let's add more code to the components. We will make `Home.js` as the main view with links to the others:
+Let's add more code to the components. We will make `Home.js` as the main view with links to the other views:
 
 ```jsx
 // frontend/src/components/Home.js
@@ -411,9 +411,9 @@ class Signup extends Component {
 export default Signup;
 ```
 
-We use `bootstrap` forms to create signup form. It is only a visual part of it. Is is not going to perform any actions, but we will add it soon (in the next posts). If you will write some username and password and click on `Signup` button, you should see some logs in your console (please open [web tools](https://developers.google.com/web/tools/chrome-devtools/console) to check console). There are two variables in the component's state: `username` and `password`. Both variables are connected with input fields.
+We use `bootstrap` forms to create signup form. It is only a visual part of it. It is not going to perform any actions, but we will add it soon (in the next posts). If you will write some username and password and click on `Signup` button, you should see some logs in your console (please open [web tools](https://developers.google.com/web/tools/chrome-devtools/console) to check console). There are two variables in the component's state: `username` and `password`. Both variables are connected with input fields.
 
-Please take a notice that only username and password is requred to create the account. In the future post, there will be an example where there will be needed: user name, email address, password and repeated password (the login will be based on email + password).
+Please take a notice that only username and password is required to create the account. In the future post, there will be an example where user name, email address, and password will be needed (the login will be based on email + password).
 
 The code for `Login.js` (which is very similar to `Signup.js`):
 

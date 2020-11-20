@@ -11,6 +11,8 @@ type: blog
 
 In the [previous article](/tutorial/react-token-based-authentication-django) we've added signup and login features to the frontend. After login we have a redirect to the `Dashboard` view. However, you can access `Dashboard` view even if you are not logged in. In this post we will make the `AuthenticatedComponent` for `Dashboard` so only logged users will be able to access it. If not logged user would like to access the `Dashboard` URL then she will be redirected to `Login` with redirect in the URL `/login?next=/dashboard` after successful login. We will also add logout feature in the `Dashboard`.
 
+
+
 ## Authenticated Component
 
 In `frontend/src/utils` directory please add a new file `RequireAuth.js`:
