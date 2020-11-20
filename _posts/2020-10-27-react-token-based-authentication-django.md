@@ -10,7 +10,7 @@ date: 2020-10-27
 type: blog
 ---
 
-In this post, we will write React code to interact with token-based authentication REST API from the Django backend. We will use code from the previous post: [Token Based Authenitcation with Django Rest Framework and Djoser](/tutorial/token-based-authentication-django-rest-framework-djoser) (code with tag [v3](https://github.com/saasitive/django-react-boilerplate/tree/v3))
+In this post, we will write React code to interact with token-based authentication REST API from the Django backend. We will use code from the previous post: [Token Based Authenitcation with Django Rest Framework and Djoser](/tutorial/token-based-authentication-django-rest-framework-djoser) (code with [tag v3](https://github.com/saasitive/django-react-boilerplate/tree/v3))
 
 This post will be splitted into following parts:
 

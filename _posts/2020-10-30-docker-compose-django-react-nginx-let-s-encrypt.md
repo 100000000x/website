@@ -12,14 +12,16 @@ date: 2020-10-30
 type: blog
 ---
 
-The most exciting moment of web application development is deployment. Your app is going live. It can also be nerve-wracking. Unfortunately. There are many options, many variables, configurations. It is easy to miss something ... In this article, I will show you how to pack Django and React application into containers and deploy them with `docker-compose`. The presented approach can be reused on any Cloud Provider (AWS, DigitalOcean, Linode, GCP, Heroku) - you just need a Virtual Private Server (VPS).
+The most exciting moment of the web application development is a deployment. Your app is going live! It can also be nerve-wracking moment. Unfortunately. There are many options, many variables and configurations. It is easy to miss something ... In this article, I will show you how to pack Django and React application into containers and deploy them with `docker-compose`. The presented approach can be reused on any Cloud Provider (AWS, DigitalOcean, Linode, GCP, Heroku) - you just need a Virtual Private Server (VPS).
 
 In this article:
- - We will create two `docker-compose` configuration files. One for development (easier version) and one for production (with SSL certificate from [Let's encrypt](https://letsencrypt.org/)).
+ - We will create two `docker-compose` configuration files. One for development (easier version) and one for production (with SSL certificate from [Let's Encrypt](https://letsencrypt.org/)).
  - The React static files will be served by `nginx`.
  - The Django static files (from admin and DRF browsable API) will be served by `nginx`.
- - The `nginx` will be reverse-proxy to Django server.
- - In production `docker-compose` we will add [`certbot`](https://certbot.eff.org/) to renew the certificate. To issue a certificate we will use bash script. To issue the certificate you need to have a domain.
+ - The `nginx` will be reverse-proxy to the Django server (`gunicorn`).
+ - In the production, we will add [`certbot`](https://certbot.eff.org/) to renew the certificate. To issue a certificate we will use a bash script. You need to have a domain to issue the certificate .
+
+We will be using code from the previous article: [CRUD in Django Rest Framework and React](https://saasitive.com/tutorial/crud-django-rest-framework-react/) (code with [tag v6](https://github.com/saasitive/django-react-boilerplate/tree/v6)).
 
 ## Create Dockerfile for Django and Nginx
 
@@ -34,10 +36,10 @@ Let's start by adding a new directory `docker` in the main directory of the proj
 └── README.md
 ```
 
-In `docker` directory please add `backend` directory with two files:
+In the `docker` directory please add `backend` directory with two files:
 
 - `docker/backend/Dockerfile` - it will define how to build Django container,
-- `docker/backend/wsgi-entrypoint.sh` - it will be entrypoint for container. It will apply migrations, collect static files and run WSGI server with [`gunicorn`](https://gunicorn.org/). 
+- `docker/backend/wsgi-entrypoint.sh` - it will be entrypoint for Django container. It will apply migrations, collect static files and run WSGI server with [`gunicorn`](https://gunicorn.org/). 
 
 
 ### Django Dockerfile
@@ -61,17 +63,18 @@ ADD ./docker /app/docker
 ADD ./backend /app/backend
 ```
 
-In this `Dockerfile` the `python:3.8.3-alpine` is used. Let's decode this image name and tag. It containes python in version `3.8.3`. It is running Linux distribution [`Alpine`](https://alpinelinux.org/) which is lightweight. The purpose of using lightweight Linux is to have small image which will result in faster builds. You can of course use different base image. For purpose of this tutorial the `python:3.8.3-alpine` is sufficient.
+In this `Dockerfile` the `python:3.8.3-alpine` is used as base image. Let's decode this image name and tag. It contains python in version `3.8.3`, running in the Linux distribution [`Alpine`](https://alpinelinux.org/) which is lightweight. The purpose of using lightweight Linux is to have small image which will result in faster builds. You can of course use different base image. For purpose of this tutorial the `python:3.8.3-alpine` is sufficient.
 
-We create `/app` directory in the container and copy `/backend/requirements.txt`. Then, `gunicorn` and all needed packages are installed. The backend source code is copied at the end of the container build. It is on purpose. It makes building faster. When you change something in the code (without changing `requirements.txt`), only the last line of `Dockerfile` will be executed and the rest will be read from cache (of course if available).
+We create `/app` directory in the container and copy `/backend/requirements.txt`. Then, `gunicorn` and all needed packages are installed. The backend source code is copied at the end of the container build. It is on purpose. It makes building faster. When you change something in the code (without changing the `requirements.txt` file), only the last line of the `Dockerfile` will be executed and the rest will be read from cache (of course if available).
 
-The `Dockerfile` is not executing any command, we will use for this purpose `wsgi-entrypoint.sh`.
+The `Dockerfile` is not executing any command, we will use `wsgi-entrypoint.sh` script for this purpose.
 
 ### Docker entrypoint
 
 Please add a new file `docker/backend/wsgi-entrypoint.sh` and add execute rights to the file (it is a bash script):
 
 ```bash
+# add execute rights
 chmod +x docker/backend/wsgi-entrypoint.sh
 ```
 
@@ -110,15 +113,15 @@ gunicorn server.wsgi --bind 0.0.0.0:8000 --workers 4 --threads 4
 
 The above script is waiting till serever volume and database is ready. It runs migration on database and collect static files. It runs `gunicorn` server with IP address `0.0.0.0` and (docker default IP) and port `8000`.
 
-The `gunicorn` is running `4` worker and `4` threads. You can set different numbers here. It depends on your machine. There are some heuristic rules that number of workers can be set as `4 * CPU cores` (see the [gunicorn docs](https://docs.gunicorn.org/en/stable/settings.html#workers)). If you are deploying application to machine with 4 CPU cores, then you can use `9` workers. (Remember, it is just heuristic not an exact rule). Then you can specify how many threads will be running in each worker. In our case, there are `4` threads ([gunicorn docs](https://docs.gunicorn.org/en/stable/settings.html#threads)). This means that we can process `4 * 4 = 16` concurrent requests. 
+The `gunicorn` is running `4` workers with `4` threads each. You can set different numbers here. It depends on your machine. There are some heuristic rules that set number of workers as `4 * CPU cores` (see the [gunicorn docs](https://docs.gunicorn.org/en/stable/settings.html#workers)). If you are deploying application to machine with 1 CPU core, then you can use `4` workers. (Remember, it is just heuristic not an exact rule). Then you can specify how many threads will be running in each worker. In our case, there are `4` threads ([gunicorn docs](https://docs.gunicorn.org/en/stable/settings.html#threads)). This means that we can process `4 * 4 = 16` concurrent requests. 
 
-**1st Note:** We are using [SQLite](https://sqlite.org) for our development - it doesn't support concurrency. We will need to replace SQLite with advanced database engine like [PostgreSQL](https://www.postgresql.org/). I will replace database at the end of this tutorial to make final deployment. Although, I think it is good to deploy application already and practice deployment and code updates in production. That's why we are here.
+**1st Note:** We are using [SQLite](https://sqlite.org) for our development - it doesn't support concurrency. We will need to replace SQLite with advanced database engine like [PostgreSQL](https://www.postgresql.org/). I will replace database at the end of this tutorial to make final deployment. I think it is good to deploy application. We will practice deployment and code updates in the production. That's why we are here.
 
-**2nd Note:** One more thing, I added other options to run Django server in `wsgi-entrypoint.sh`. Why? You might need them for debugging. The first option add logging to the console with debug level and run `gunicorn` with one worker and single thread. The second option runs Django development server with `DEBUG=True`. It is setting environment variable and load it in `settings.py` with [`python-decouple`](https://github.com/henriquebastos/python-decouple) I will write about this in this post (don't worry!).
+**2nd Note:** One more thing, I added other options to run Django server in `wsgi-entrypoint.sh` which are commmented. Why? You might need them for debugging. The first option add logging to the console with debug level and run `gunicorn` with one worker and single thread. The second option runs Django development server with `DEBUG=True`. It needs setting environment variable and load it in `settings.py` with [`python-decouple`](https://github.com/henriquebastos/python-decouple) (for example), I will write about this in the future post.
 
 #### Django static files
 
-Before going further, let's update `STATIC_URL` variable in `backend/server/server/settings.py`:
+Before going further, let's update `STATIC_URL` variable in the `backend/server/server/settings.py`:
 
 ```py
 # backend/server/server/settings.py
@@ -128,21 +131,21 @@ STATIC_URL = '/django_static/'
 STATIC_ROOT = BASE_DIR / 'django_static'
 ```
 
-We overwrite `STATIC_URL` with new value. All static files will be served with `/django_static/` in the URL. We add two new variables: 
+We overwrite `STATIC_URL` with a new value. All static files will be served with `/django_static/` in the URL. We add two new variables: 
 - `MEDIA_URL` - it is URL for serving files uploaded to Django application, we will use it in future posts.
-- `STATIC_ROOT` - it is a directory where static files from Django application will be stored after running `collectstatic` command. To this path will point `nginx`.
+- `STATIC_ROOT` - it is a directory where static files from Django application will be stored after running `collectstatic` command. The `nginx` will point to this path.
 
 ### Nginx Dockerfile and Configuration
 
-Please add `nginx` directory in `docker` directory. There will be added three files:
+Please add `nginx` directory in the `docker` directory. There will be added three files:
 - `docker/nginx/Dockerfile` - the instructions how to build `nginx` container image,
-- `docker/nginx/development/default.conf` - the configuration file for `nginx` server used in development,
-- `docker/nginx/production/default.conf` - the configuration file for production.
+- `docker/nginx/development/default.conf` - the configuration file for `nginx` server used in the development,
+- `docker/nginx/production/default.conf` - the configuration file for the production.
 
 The `Dockerfile` for `nginx` container will use two stage build. 
 
-- At first stage, the React static files will be created.
-- At second stage, the static files will be copied and `nginx` server will be started. We copy React static files into `/usr/share/nginx/html` directory.
+- At first stage, we build the React static files.
+- At second stage, the static files are copied and `nginx` server starts. We copy React static files into `/usr/share/nginx/html` directory.
 
 
 The `docker/nginx/Dockerfile` file:
@@ -168,8 +171,7 @@ CMD ["nginx", "-g", "daemon off;"]
 
 The two stage build make the final image smaller.
 
-Let's add `nginx` configuration for development `docker-compose` (without SSL):
-
+Let's add `nginx` configuration for development version of `docker-compose` (without SSL certificate):
 
 ```nginx
 server {
@@ -209,7 +211,7 @@ server {
 
 > What do you feel when you see `nginx` configuration file? 
 
-No troubles! The `nginx` is here to help us. It will do what we will ask in configuration.
+No troubles! The `nginx` is here to help us. It will do what we will ask in the configuration.
 
 ```nginx
 server {
@@ -219,9 +221,9 @@ server {
     client_max_body_size 20M;
 ```
 
-At the begining of the configuration we define a server (`server` keyword). It will listen on port `80` (it is `HTTP` port). There is no name assigned to the server (`server_name _;`). We switch off option to show server version on error pages (`server_token off;` [see docs](http://nginx.org/en/docs/http/ngx_http_core_module.html#server_tokens)). The last setting is to set maximum request size ([see docs](http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size)) (`client_max_body_size 20M`). It means that requests larger than 20MB will result in error with HTTP 413 (Request Entity Too Large).
+At the begining of the configuration we define a server (`server` keyword). It will listen on port `80` (it is a default `HTTP` port). There is no name assigned to the server (`server_name _;`). We switch off option to show server version on error pages (`server_token off;` [see docs](http://nginx.org/en/docs/http/ngx_http_core_module.html#server_tokens)). The last setting is to set maximum request size ([see docs](http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size)) (`client_max_body_size 20M`). It means that requests larger than 20MB will result in error with HTTP 413 (Request Entity Too Large).
 
-We have five `location` blocks ([location docs](http://nginx.org/en/docs/http/ngx_http_core_module.html#location)) in the config which specify configuration for each URL (some kind of routing for requests).
+We have five `location` blocks ([location docs](http://nginx.org/en/docs/http/ngx_http_core_module.html#location)) in the config which specify configuration for each URL (routing for requests).
 
 The first `location /` defines what to do if the request comes from `/` (main domain or IP). The `index.html` file from `/usr/share/nginx/html` will be served as a response. It is our React static `index.html` file. 
 
@@ -244,7 +246,7 @@ The second and third locations `location /api` and `location /admin` redirect re
     }
 ```
 
-What we have in fourth `location @proxy_api`? It is our Django application served with `gunicorn`. The nginx forwards all requests with `/api` and `/admin` in the URL to `http://backend:8000` which is the address of Django application in `docker-compose`:
+What we have in fourth `location @proxy_api`? It is our Django application served with `gunicorn`. The `nginx` forwards all requests with `/api` and `/admin` in the URL to `http://backend:8000` which is the address of the Django application in the `docker-compose`:
 
 ```nginx
     location @proxy_api {
@@ -254,7 +256,7 @@ What we have in fourth `location @proxy_api`? It is our Django application serve
     }
 ```
 
-The last `location /django_static/` serves static files from Django application (created with `collectstatic` command):
+The last `location /django_static/` serves static files from the Django application (created with `collectstatic` command):
 
 ```nginx
     location /django_static/ {
@@ -268,10 +270,10 @@ That's all. We have configuration file for nginx server.
 ## Docker-compose for Django, Nginx and React
 
 Our `docker-compose` will run two containers:
-- `nginx` that will run `nginx` server on port 80 (default HTTP port). The `nginx` container has two volumes mounted, one with `django_static` and one with configuration file (from `docker/nginx/development` directory). The `nginx` container depends on `backend` container, which means that `nginx` will start after `backend` (Django app).
-- `backend` will run container with Django application. It runs the `/app/docker/backend/wsgi-entrypoint.sh` that spin off the `gunicorn` server. The `backend` has `django_static` volume with static files. 
+- the `nginx` container that will run `nginx` server on port 80 (default `HTTP` port). The `nginx` container has two volumes mounted, one with `django_static` and one with configuration file (from `docker/nginx/development` directory). The `nginx` container depends on `backend` container, which means that `nginx` will start after `backend` (Django app).
+- the `backend` will run container with Django application. It runs the `/app/docker/backend/wsgi-entrypoint.sh` script that starts the `gunicorn` server. The `backend` has `django_static` volume with static files. 
 
-We will save our `docker-compose` in `docker-compose-dev.yml` file (in main project directory):
+We will save our `docker-compose` in the `docker-compose-dev.yml` file (in main project directory):
 
 ```yml
 version: '2'
@@ -314,7 +316,7 @@ There are few useful commands for dealing with `docker-compose`.
 docker-compose -f docker-compose-dev.yml build
 ```
 
-Please notice that we are using `-f docker-compose-dev.yml` - it is to point custom `yml` file. By default `docker-compose` is reading `yml` configuration file from `docker-compose.yml`.
+Please notice that we are using `-f docker-compose-dev.yml` - it is to point custom `yml` file. By default `docker-compose` is reading `yml` configuration file from `docker-compose.yml` (we keep default name for production setting).
 
 #### Run containers
 
@@ -328,7 +330,7 @@ docker-compose -f docker-compose-dev.yml up
 docker-compose -f docker-compose-dev.yml down
 ```
 
-You can also use `Ctrl+C` to stop containers.
+You can also use `Ctrl+C` to stop containers if not running in the background.
 
 #### Build and run containers
 
@@ -336,15 +338,15 @@ You can also use `Ctrl+C` to stop containers.
 docker-compose -f docker-compose-dev.yml up --build
 ```
 
-Please build container and run it with last command. You should see logs from `backend` and `nginx` in the terminal.
+Please build containers and run them with last command. You should see logs from `backend` and `nginx` in the terminal.
 
-OK, let's go into browser and go to [`http://0.0.0.0`](http://0.0.0.0) address. You should see the `Home` view. Let's try to login:
+OK, let's go into browser and go to [http://0.0.0.0](http://0.0.0.0) address. You should see the `Home` view. Let's try to login:
 
 [![Login error](login_error.png){:.image-border}](login_error.png)
 
 After login attempt you should see toast with error: "Network Error" and some errors in the console.
 
-We need to update our code. In the frontend we need to set in the `axios` to point to correct address of server. In the backend we need to add `0.0.0.0` to `ALLOWED_HOSTS`.
+We need to update our code. We need to set `axios` configuration to point to correct address of server in the frontend. In the backend, we need to add `0.0.0.0` to `ALLOWED_HOSTS` (in `settings.py` file).
 
 Update `frontend/src/App.js` code.
 
@@ -362,9 +364,9 @@ if (window.location.origin === "http://localhost:3000") {
 
 ```
 
-In the frontend we set a logic to point the correct address of the server:
+In the frontend, we set a logic to point the correct address of the server:
  - in the case of development the `axios` will call server at `http://127.0.0.1:8000`,
- - in production the `axios` will call server at the same location origin as frontend. Frontend will call in fact `nginx` and it will redirect request to the Django.
+ - in the production, the `axios` will call server at the same location origin as frontend. Frontend will call in fact `nginx` and it will redirect request to the Django.
 
 In the `backend/server/server/settings.py` we need to update `ALLOWED_HOSTS` variable:
 
@@ -382,11 +384,11 @@ After changes we need stop containers (`Ctrl+C`) and then rebuild docker contain
 docker-compose -f docker-compose-dev.yml up --build
 ```
 
-Now, if you try to login you should be successful! What is more, you can use this `docker-compose` and run it on VPS in the cloud and make it available to others. BUT, it will be unsecure! It is using only HTTP. To make it secure we need to add certificate. For this we will create next `docker-compose` configuration file for production. We also add production `nginx` configuration file.
+Now, if you try to login you should be successful! What is more, you can use this `docker-compose` and run it on VPS in the cloud and make it available to others. BUT, it will be unsecure! It is using only HTTP. We need to add SSL certificate to make it secure. For this we will create next `docker-compose` configuration file for production. We also add production `nginx` configuration file.
 
 ## Production docker-compose
 
-Let's add directory `production` in `docker/nginx/` with `default.conf` file. It will be a configuration of `nginx` server to be used in production:
+Let's add directory `production` in the `docker/nginx/` with `default.conf` file. It will be a configuration of `nginx` server to be used in the production:
 
 ```nginx
 server {
@@ -444,7 +446,7 @@ server {
 }
 ```
 
-It is similar to development configuration. It has two `server` definitions. The first one:
+It is similar to the development configuration. It has two `server` definitions. The first one:
 
 ```nginx
 server {
@@ -464,7 +466,7 @@ server {
 
 The above definition listen on port `80` and redirects all requests to `HTTPS` (`return 301 https://$host$request_uri;`). In this part there is also a `server_name` filled to `boilerplate.saasitive.com`. I'm planning to run the application from this tutorial on `boilerplate.saasitive.com` domain. **You should use here your own domain.**. The `location /.well-known/acme-challenge/` is used by cerbot for issuing the certificate.
 
-Let's look closer at second `server` in configuration:
+Let's look closer at second `server` in the configuration:
 
 ```nginx
 server {
@@ -504,7 +506,7 @@ The rest of the configuration is very similar to development configuration, exce
 
 ```
 
-Let's add production `docker-compose`. The `docker-compose.yml` file in main project directory:
+Let's add production `docker-compose`. The `docker-compose.yml` file in the main project directory:
 
 ```yml
 version: '2'
@@ -547,11 +549,11 @@ volumes:
     static_volume: {}
 ```
 
-The `nginx` server is listenning on two ports: 80 (`HTTP`) and 443 (`HTTPS`). There are added additional volumes in `nginx` with certificate. There is new container `certbot` that is responsible for certificate renewal. There are no changes in `backend` container.
+The `nginx` server is listenning on two ports: 80 (`HTTP`) and 443 (`HTTPS`). There are added additional volumes in `nginx` with certificate. There is a new container `certbot` that is responsible for certificate renewal. There are no changes in the  `backend` container.
 
-OK, to be ready to run it we need to get the certificate from [`Let's encrypt`](https://letsencrypt.org/). I will use for it bash script `initletsencrypt.sh`. The script is from:
+OK, to be ready to run `docker-compose` we need to get the certificate from [Let's Encrypt](https://letsencrypt.org/). I will use for it a bash script `init-letsencrypt.sh`. The script is from:
 - article [Nginx and Let’s Encrypt with Docker in Less Than 5 Minutes](https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71),
-- the Github repository with script: [link](https://github.com/wmnnd/nginx-certbot)
+- the Github repository with script: [link](https://github.com/wmnnd/nginx-certbot).
 
 The `init-letsencrypt.sh` file:
 
@@ -641,7 +643,7 @@ docker-compose exec nginx nginx -s reload
 You need to set two variables in the script:
 
 - `domains=(boilerplate.saasitive.com www.boilerplate.saasitive.com)` you should enter **your domain** here,
-- `staging=1` - is set to **test** the configuration first with **Let's encrypt staging environment**! It is important to not set `staging=0` before you are 100% sure that your configuration is correct. If you are sure, that all is set correctly, set `staging=0`. This is because there are limited number of retries to issue the certificate and you don't want to wait till they are reseted (one week). To read more about this, check [Let's encrypt rate limits docs](https://letsencrypt.org/docs/rate-limits/).
+- `staging=1` - is set to **test** the configuration first with **Let's encrypt staging environment**! It is important to not set `staging=0` before you are 100% sure that your configuration is correct. If you are sure, that all is set correctly, set `staging=0`. This is because there are limited number of retries to issue the certificate and you don't want to wait till they are reseted (once a week). To read more about this, check [Let's encrypt rate limits docs](https://letsencrypt.org/docs/rate-limits/).
 
 
 We will use this script first with `staging=1`. We will test if web application is running correctly. If yes then we will issue production certificate and run the application with it.
@@ -650,7 +652,7 @@ We will use this script first with `staging=1`. We will test if web application 
 
 ## Deploy to VPS
 
-I will use AWS to deploy the project. The application will be deployed to [`boilerplate.saasitive.com`](https://boilerplate.saasitive.com) address.
+I will use AWS to deploy the project. The application will be deployed to [boilerplate.saasitive.com](https://boilerplate.saasitive.com) address.
 
 We need to do below steps to deploy application:
 - start EC2 instance,
@@ -662,7 +664,7 @@ We need to do below steps to deploy application:
 
 #### Start EC2 instance
 
-First thing is to start EC2 instance. I'm using `t2.micro` instance (cant use `t2.nano` because of too low memory to build containers). Please launch new EC2 instance. I'm using `Ubuntu Server 18.04 LTS` as the image (the last image in the screenshot below):
+First thing is to start EC2 instance. I'm using `t2.micro` instance (cant use `t2.nano` because of too low memory to build containers). Please launch a new EC2 instance. I'm using `Ubuntu Server 18.04 LTS` as the image (the last image in the screenshot below):
 
 [![AWS Instance type](aws_instance_type.png){:.image-border}](aws_instance_type.png)
 
@@ -670,11 +672,11 @@ After clicking select, please go with `t2.micro` instance type (the cost of runn
 
 [![AWS security rules](aws_security.png){:.image-border}](aws_security.png)
 
-Click `Review and Launch` and then `Launch`. You should get the `*.pem` file for secure connection to instance. You can use existing key pair or generate the new one. My file is `boilerplate.pem`. After a few seconds you should see your instance running. Congratulations, you have a VPS running! Now, we will configure domain to point to our VPS.
+Click `Review and Launch` and then `Launch`. You should get the `*.pem` file for secure connection to the instance. You can use existing key pair or generate the new one. My file is `boilerplate.pem`. After a few seconds you should see your instance running. Congratulations, you have a VPS running! Now, we will configure domain to point to our VPS.
 
 #### Configure DNS
 
-In instances view, please click on your instance and you should see `Public IPv4 address`. Please copy this address.
+In the instances view, please click on your instance and you should see `Public IPv4 address`. Please copy this address.
 
 Let's go to `Route 53` service in AWS to configure the DNS. I have there Hosted zone configured for [saasitive.com](https://saasitive) domain. I will add there two `type A` records. Please click on `Create record`. Then select `Simple routing`. Click `Next` and `Define simple record`. Please give the record name and route traffic to VPS IP, like in the image below:
 
@@ -699,17 +701,17 @@ ssh -i "boilerplate.pem" ubuntu@ec2-your-ip.compute-1.amazonaws.com
 ```
 
 Please remember to:
-- give correct permissions to `*.pem` file: ` chmod 400 boilerplate.pem`,
-- please replace the name `*.pem` file to yours.
+- give correct permissions to `*.pem` file: `chmod 400 boilerplate.pem`,
+- please replace the name of `*.pem` file to yours.
 
 After ssh, you should be logged in the VPS. Let's install `docker` and create the `app` directory:
 
-```
+```bash
 sudo snap install docker
 mkdir app
 ```
 
-In the new console, please navigate to project directory and `rsync` it with directory in VPS:
+In the new console, please navigate to the project directory and `rsync` it with directory in VPS:
 
 ```bash
 # run locally in project main directory
@@ -730,7 +732,7 @@ cd app
 sudo docker-compose build
 ```
 
-First, we will issue certificate from Let's encrypt staging environment.
+First, we will issue certificate from Let's Encrypt staging environment.
 ```bash
 # run in VPS! in app dir
 sudo ./init-letsencrypt.sh 
@@ -743,7 +745,7 @@ sudo docker-compose down
 sudo docker-compose up --detach
 ```
 
-You should be able to navigate to your website. Please go to web browser and enter your domain (or subdomain). In my case, I will go to [`https://boilerplate.saasitive.com`](https://boilerplate.saasitive.com). You should see warning message (depending on your browser) that will tell you that connection is insecure:
+You should be able to navigate to your website. Please go to web browser and enter your domain (or subdomain). In my case, I will go to [https://boilerplate.saasitive.com](https://boilerplate.saasitive.com). You should see warning message (depending on your web browser) that will tell you that connection is insecure:
 
 [![Firefox insecure warning](firefox_warning.png){:.image-border}](firefox_warning.png)
 
@@ -751,7 +753,7 @@ To see the website, you need to go into advanced options and accept the risk. Af
 
 [![Not secure connection](not_secure.png){:.image-border}](not_secure.png)
 
-We need to issue production certificate. Let's go to VPS and stop containers:
+We need to issue production-ready certificate. Let's go to VPS and stop containers:
 
 ```bash
 # run in VPS! in app dir
@@ -766,7 +768,7 @@ You need to edit `init-letsencrypt.sh` file and set `staging=0`. Then run the sc
 sudo ./init-letsencrypt.sh
 ```
 
-Once again, stop containers and run in the background:
+Once again, stop containers and run them in the background:
 
 ```bash
 # run in VPS! in app dir
@@ -788,7 +790,7 @@ Ups, there is some error ...
 
 #### Edit ALLOWED_HOSTS
 
-One more thing, we need to add `boilerplate.saasitive.com` and `www.boilerplate.saasitive.com` to the `ALLOWED_HOSTS` in Django `settings.py` file. One more thing, there is a `DEBUG` flag in `settings.py`. Please set it to `False`.
+One more thing, we need to add `boilerplate.saasitive.com` and `www.boilerplate.saasitive.com` to the `ALLOWED_HOSTS` in Django `settings.py` file. And, there is a `DEBUG` flag in `settings.py`. Please set it to `False`.
 
 ```py
 # backend/server/server/settings.py
@@ -826,7 +828,7 @@ Please try to login after update:
 
 [![Success app is running](success.png){:.image-border}](success.png)
 
-You can try to create new users and login for example from your phone browser. The application will be working!!! :)
+You can try to create new users and login for example from your phone web browser. The application will be working!!! :)
 
 ### Commit changes to the repository code
 
@@ -843,16 +845,19 @@ git commit -am "add docker-compose"
 git push
 ```
 
+---
+
 ## Summary
 
-- We've deployed application to AWS EC2 instance with docker-compose.
-- There is still many things to be added in the project. 
-- We need to better handle configuration variables and `SECRET_KEY` in Django code. We will add this in the future post with [python-decouple](https://github.com/henriquebastos/python-decouple/) package.
+- We've created two `docker-compose` configurations, one for development and one for production.
+- The production `docker-compose` has SSL certificate from Let's Encrypt.
+- We've deployed application to AWS EC2 instance with `docker-compose`.
+- There are still many things to be added in the project. 
+- We need to better handle configuration variables and `SECRET_KEY` in the Django code. We will add this in the future post with [python-decouple](https://github.com/henriquebastos/python-decouple/) package.
 - We need to switch database engine to PostgreSQL.
-- After every update in the application, we will need to run a set of commands. This can be boring and error-prone. That's why we will need to add Continous Integration to our project. This can be added in many different ways, I will try to figure out the simplest approach. I'm open to your suggestion.
-- It is important to remember that if EC2 machine is restarted, then new IP address is assigned. So there is a need to reconfigure DNS again. This can be prevented with static IP address. But, you need to pay for it additionally. I'm not setting the static IP. I'm planning to write custom blue/green deployment script (of course in the future post).
-
+- After every update in the application, we will need to run a set of commands. This can be boring and error-prone. That's why we will need to add Continous Integration (CI) to our project. This can be added in many different ways, I will try to figure out the simplest approach (usually, I go with bash scripts). I'm open to your suggestions.
+- It is important to remember that if EC2 machine is restarted, then new IP address is assigned. So there is a need to reconfigure DNS again. This can be prevented with static IP address. But, you need to pay for it additionally. I'm not setting the static IP. I'm planning to write custom blue/green deployment script (in the future post).
 
 ## What's next?
 
-In the next article we will add email verification functionality. 
+In the next article we will extend user model. 

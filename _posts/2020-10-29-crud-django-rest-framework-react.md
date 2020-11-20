@@ -12,11 +12,13 @@ date: 2020-10-29
 type: blog
 ---
 
-In this artilce, we will create a CRUD (Create, Read, Update, Delete) model in Django Rest Framework and React. It will be for simple note taking. User will be able to add new note, read all her notes, update note (to upper or lower case), and delete selected note. We will be using code from previous article: [React Authenticated Component](/tutorial/react-authenticated-component/) (tag [v5](https://github.com/saasitive/django-react-boilerplate/releases/tag/v5)).
+In this artilce, we will create a CRUD (Create, Read, Update, Delete) model in the Django Rest Framework and React. It will be for simple note taking. User will be able to add new note, read all her notes, update note (to upper or lower case), and delete selected note.
+
+We will be using code from previous article: [React Authenticated Component](/tutorial/react-authenticated-component/) (code with [tag v5](https://github.com/saasitive/django-react-boilerplate/releases/tag/v5)).
 
 ## Create CRUD model in DRF
 
-Let's start by adding new app in Django application.
+Let's start by adding a new app in the Django application.
 
 ```bash
 # run in backend/server directory
@@ -62,7 +64,7 @@ Let's define a database model in `backend/server/apps/notes/models.py` file. It 
 
 - `created_at` - the automatically added timestamp at creation time.
 - `created_by` - the foreign key to user that created the note. Please notice that it has `on_delete=models.CASCADE` which means that if user will be deleted, all her notes will be deleted as well.
-- `content` - the note.
+- `content` - the text of the note.
 
 **Note:** We are not adding `id` field, it will be added atumatically by Django as primary key with automatic increments.
 
@@ -80,7 +82,7 @@ class Note(models.Model):
     content = models.TextField(blank=True)
 ```
 
-Please add new file `backend/server/apps/notes/serializers.py`. The serializer will allow to create/update only `content` field. Other fields will be read-only.
+Please add a new file `backend/server/apps/notes/serializers.py`. The serializer will allow to create/update only `content` field. Other fields will be read-only.
 
 ```py
 # backend/server/apps/notes/serializers.py
@@ -105,7 +107,7 @@ class NoteSerializer(serializers.ModelSerializer):
         )
 ```
 
-Model and serializer are ready. Time to add view. We will use DRF [`ModelViewSet`](https://www.django-rest-framework.org/api-guide/viewsets/#modelviewset) because it provides all functions for CRUD.
+Model and serializer are ready. Time to add a view. We will use the DRF [`ModelViewSet`](https://www.django-rest-framework.org/api-guide/viewsets/#modelviewset) because it provides all functions needed for CRUD.
 
 ```py
 # backend/server/apps/notes/views.py
@@ -126,9 +128,9 @@ class NoteViewSet(viewsets.ModelViewSet):
         return self.queryset.filter(created_by=self.request.user)
 ```
 
-We overwrite `perform_create()` (to save information about who created the node `created_by` field) and `get_queryset()` (to return only notes created by logged user) functions. 
+We overwrite `perform_create()` (to save information about who created the note, `created_by` field) and `get_queryset()` (to return only notes created by owner) functions. 
 
-Please add new file: `backend/server/apps/notes/urls.py`. We will define in `urls.py` URLs to the `ModelViewSet`. We will use DRF [`DefaultRouter`](https://www.django-rest-framework.org/api-guide/routers/#defaultrouter). It provides all needed paths.
+Please add a new file: `backend/server/apps/notes/urls.py`. We will define new URLs to the `ModelViewSet` in the `urls.py` file. We will use the DRF [`DefaultRouter`](https://www.django-rest-framework.org/api-guide/routers/#defaultrouter). It provides all needed paths.
 
 ```py
 # backend/server/apps/notes/urls.py
@@ -142,7 +144,15 @@ router.register("notes", NoteViewSet, basename="notes")
 notes_urlpatterns = [url("api/v1/", include(router.urls))]
 ```
 
-To be able to access `notes` app in Django we need to update `INSTALLED_APPS` variable.
+Our REST API for notes:
+- `GET` list of notes: `/api/v1/notes`,
+- `GET` one note with id: `/api/v1/notes/1/` (for `id = 1`), 
+- create note, the `POST` request at `/api/v1/notes/` with note JSON containg `content` field,
+- delete note with `DELETE` request at `/api/v1/notes/1/` (for `id = 1`),
+- partial note update with `PATCH` request at `/api/v1/notes/1/` (for `id = 1`),
+- full note update with `PUT` request at `/api/v1/notes/1/` (for `id = 1`).
+
+To be able to access `notes` app in the Django server we need to update `INSTALLED_APPS` variable.
 
 ```py
 
@@ -182,12 +192,13 @@ urlpatterns += accounts_urlpatterns # add URLs for authentication
 urlpatterns += notes_urlpatterns    # notes URLs
 ```
 
-We added new model in the database. Because of this, we need to create migration and then apply it.
+We've added a new model in the database. Because of this, we need to create migration and then apply it.
 
 ```bash
 # run in backend/server directory
 ./manage.py makemigrations
-
+```
+```bash
 # the expected output
 Migrations for 'notes':
   apps/notes/migrations/0001_initial.py
@@ -199,7 +210,8 @@ Apply migrations to the database:
 ```bash
 # run in backend/server
 ./manage.py migrate
-
+```
+```bash
 # the expected output
 Operations to perform:
   Apply all migrations: admin, auth, authtoken, contenttypes, notes, sessions
@@ -243,39 +255,39 @@ class Migration(migrations.Migration):
     ]
 ```
 
-You can test the notes REST API by opening [`http://127.0.0.1/api/v1/notes/`](http://127.0.0.1/api/v1/notes/) in the web browser. Please remember to set the token in ModHeader. You should see returned list of note, which will be empty `[]`:
+You can test the notes REST API by opening [http://127.0.0.1/api/v1/notes/](http://127.0.0.1/api/v1/notes/) in the web browser. Please remember to set the token in the ModHeader. You should see returned list of notes, which will be empty `[]`:
 
 [![Notes REST API](notes_REST_API.png){:.image-border}](notes_REST_API.png)
 
-Let's create the first note. Fill `Content` form and click `POST`:
+Let's create the first note. Fill the `Content` form and click `POST`:
 
 [![Create Note REST API](create_note_REST_API.png){:.image-border}](create_note_REST_API.png)
 
-Now, the [`http://127.0.0.1/api/v1/notes/`](http://127.0.0.1/api/v1/notes/) address should return one note in the list:
+Now, the [http://127.0.0.1/api/v1/notes/](http://127.0.0.1/api/v1/notes/) address should return one note in the list:
 
 [![List Notes REST API](notes_REST_API_list.png){:.image-border}](notes_REST_API_list.png)
 
-Please navigate to the first note by manually setting id to `1` in URL:  [`http://127.0.0.1/api/v1/notes/1/`](http://127.0.0.1/api/v1/notes/1/). You should see `DELETE` and `PUT` buttons, which can be used to delete or update the note respectively.
+Please navigate to the first note by manually setting id to `1` in the URL address:  [http://127.0.0.1/api/v1/notes/1/](http://127.0.0.1/api/v1/notes/1/). You should see `DELETE` and `PUT` buttons, which can be used to delete or update the note respectively.
 
 [![Notes DELETE PUT REST API](notes_REST_API_delete_put.png){:.image-border}](notes_REST_API_delete_put.png)
 
-That's all! The backend REST API is ready. That's why the Django Rest Framework is amazing.
+That's all! The backend REST API is ready. That's why the Django Rest Framework is amazing. 
 
 ## The CRUD in React
 
-We will add new `notes` directory in `frontend/src/components/`. We need to define several files in it:
+We will add a new `notes` directory in the `frontend/src/components/`. We need to add several files in it:
 - `NotesTypes.js` - that will define action types,
-- `NotesActions.js` - with actions implementations,
+- `NotesActions.js` - with functions implementations,
 - `NotesReducer.js` - reducer for notes,
 - `Note.js` - the component that will display one note,
-- `AddNote.js` - the form to add new note,
-- `NotesList.js` - the component with list of notess.
+- `AddNote.js` - the form to add a new note,
+- `NotesList.js` - the component with list of notes.
 
 I will first add Create and Read functionality, and then Update and Delete. I hope this way it will be easier to follow.
 
 ### Create and Read objects in React
 
-Let's add `frontend/src/components/notes/NotesTypes.js` file with two action types:
+Let's add the `frontend/src/components/notes/NotesTypes.js` file with two action types:
 - `GET_NOTES`
 - `ADD_NOTE`.
 
@@ -286,8 +298,8 @@ export const ADD_NOTE = "ADD_NOTE";
 ```
 
 There will be two functions in the `frontend/src/components/notes/NotesActions.js` file:
-- `getNotes()` - that will return all notes from the backend (with `GET` requests),
-- `addNote()` - that will submit `POST` request to add new note in the backend.
+- `getNotes()` - that will return all notes from the backend (with `GET` request),
+- `addNote()` - that will submit `POST` request to add a new note in the backend.
 
 ```jsx
 // frontend/src/components/notes/NotesActions.js
@@ -352,9 +364,9 @@ export const notesReducer = (state = initialState, action) => {
 };
 ```
 
-We keep `notes` list in the store. If `getNotes()` returns the list with notes, they are simply assigned to `notes` in the store. In the case of adding new note, it is appended to the `notes` list. 
+We keep `notes` list in the store. If `getNotes()` returns the list with notes, they are simply assigned to the `notes` in the store. In the case of adding a new note, it is appended to the `notes` list. 
 
-Remeber to update the main reducer in `frontend/Reducer.js`. We need to add `notesReducer` there.
+Remeber to update the main reducer in `frontend/Reducer.js`. We need to add there `notesReducer` there:
 
 ```jsx
 // frontend/Reducer.js
@@ -377,7 +389,7 @@ const createRootReducer = history =>
 export default createRootReducer;
 ```
 
-To display list of notes, we first define the component for displaying one note. It will be defined in `Note.js` file. It just displays the content of the note as a text.
+To display list of notes, we first define the component for displaying one note. It will be `Note` component in the `Note.js` file. It just displays the content of the note as a text.
 
 ```jsx
 // frontend/src/components/notes/Note.js
@@ -402,7 +414,7 @@ Note.propTypes = {
 export default Note;
 ```
 
-Let's define a form for adding a new note. It will be added in `AddNote.js` file. It will have form with text input field and `Add` button. On click the `onAddClick()` function will be called, that calls `addNote()` function with text from the form as input argument. 
+Let's define a form for adding a new note. It will be added in the `AddNote.js` file. It will have form with text input field and `Add` button. On click the `onAddClick()` function will be called, that calls `addNote()` function with text from the form as input argument. 
 
 ```jsx
 // frontend/src/components/notes/AddNote.js
@@ -465,7 +477,7 @@ const mapStateToProps = state => ({});
 export default connect(mapStateToProps, { addNote })(withRouter(AddNote));
 ```
 
-Our list of notes will be defined in `NotesList.js` file. It will call `getNotes()` function in `componentDidMount()`, which means that notes will be requested from the backend after component is mounted. In the `render()` function it display notes from the store. It is using `Note` component.
+Our list of notes will be defined in the `NotesList.js` file. It will call `getNotes()` function in the `componentDidMount()`, which means that notes will be requested from the backend after component is mounted. It displays notes from the store in the `render()` function. It is using `Note` component.
 
 ```jsx
 // frontend/src/components/notes/NotesList.js
@@ -517,7 +529,7 @@ export default connect(mapStateToProps, {
 })(withRouter(NotesList));
 ```
 
-To see all new components in the frontend we need to update `Dashboard.js`:
+To see all new components in the frontend we need to update the `Dashboard.js`:
 
 ```jsx
 // frontend/src/components/dashboard/Dashboard.js
@@ -588,11 +600,11 @@ We added `NotesList` and `AddNote` components in the dashboard. If you open the 
 
 [![Dashboard with Notes](dashboard_notes.png){:.image-border}](dashboard_notes.png)
 
-OK, we are now able to create and read notes. You can try to create few notes for other user, and check that only notes created by that user are displayed for her. Let's add delete and update functionality in the frontend.
+OK, we are now able to create and read notes. You can try to create few notes for other user, and check that only notes created by owner are displayed. Let's add delete and update functionality in the frontend.
 
 ## Delete and Update the model in React
 
-We need to add `DELETE_NOTE` and `UPDATE_NOTE` types in `NotesTypes.js`:
+We need to add `DELETE_NOTE` and `UPDATE_NOTE` types in the `NotesTypes.js`:
 
 ```jsx
 // frontend/src/components/notes/NotesTypes.js
@@ -604,7 +616,7 @@ export const UPDATE_NOTE = "UPDATE_NOTE"; // add new types
 
 ```
 
-We need to add import of new types in `NotesActions.js`. We will add two new functions `deleteNote(id)` and `updateNode(id, note)`. The delete function is using `DELETE` request. The update function is using `PATCH` request. It will be partial update (update only `content` field). For full update (update of all fileds) the `PUT` request should be used.
+We need to add import of new types in `NotesActions.js`. We will add two new functions `deleteNote(id)` and `updateNode(id, note)`. The delete function is using `DELETE` request. The update function is using `PATCH` request. It will be a partial update (update only `content` field). For full update (update of all fileds) the `PUT` request should be used.
 
 ```jsx
 // frontend/src/components/notes/NotesActions.js
@@ -643,7 +655,7 @@ export const updateNote = (id, note) => dispatch => {
 
 ```
 
-After a successful axios request, the actions are dispatched. They are handled in the `notesReducer`:
+After a successful `axios` request, the actions are dispatched. They are handled in the `notesReducer`:
 - The `DELETE_NOTE` action deletes notes with id number pointed in action payload.
 - The `UPDATE_NOTE` updates the notes list with updates note (updated note is returned in the response of the REST API).
 
@@ -692,8 +704,8 @@ export const notesReducer = (state = initialState, action) => {
 ```
 
 Let's update the `Note.js`. We will add three buttons there:
-- `Upper case` button that will change the content to upper case,
-- `Lower case` button that will change the content to lower case,
+- `Upper case` button that changes the content to upper case,
+- `Lower case` button that changes the content to lower case,
 - `Delete` button that removes the note.
 
 ```jsx
@@ -756,7 +768,7 @@ export default connect(mapStateToProps, { deleteNote, updateNote })(
 
 ```
 
-By changing the `Note.js` all notes displayed in `NotesList.js` will be updated. There will be slight change in `NotesList.js`, please add horizonstal line `<hr/>`:
+By changing the `Note.js` all notes displayed in `NotesList.js` will be updated. There will be a slight change in `NotesList.js`, please add horizonstal line `<hr/>`:
 
 ```jsx
 // frontend/src/components/notes/NotesList.js
@@ -770,7 +782,7 @@ By changing the `Note.js` all notes displayed in `NotesList.js` will be updated.
 // ...
 ```
 
-OK, after all changes when you navigate to [`http://localhost:3000/dashboard`](http://localhost:3000/dashboard) you should see view like in the image below:
+OK, after all changes when you navigate to [http://localhost:3000/dashboard](http://localhost:3000/dashboard) you should see view like in the image below:
 
 [![Dashboard Notes Update and Delete](dashboard_notes_update_delete.png){:.image-border}](dashboard_notes_update_delete.png)
 
@@ -785,9 +797,11 @@ git commit -am "add CRUD in django and react"
 git push
 ```
 
+---
+
 ## Summary
 
-- In this article we added CRUD model in the backend and in the frontend.
+- In this article we've added CRUD model in the backend and in the frontend.
 - By using this approach you can add your own models and create CRUD applications.
 
 ## What's next
