@@ -169,7 +169,7 @@ COPY --from=build /app/frontend/build /usr/share/nginx/html
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-The two stage build make the final image smaller.
+At the second stage, we copy only the final product of the first stage: static files. The `node_modules` (they can take a lot of space) with dependency files are not in the final image. Such two stage-build makes the size of the final image smaller.
 
 Let's add `nginx` configuration for development version of `docker-compose` (without SSL certificate):
 

@@ -26,6 +26,14 @@
 	color: $brand-color;
 }
 
+.readmore a {
+	color: $secondary-brand-color;
+}
+
+.readmore a:hover {
+	color: $brand-color;
+}
+
 textarea, input, button, select { font-family: inherit; font-size: inherit; }
 
 input[type=submit] {

@@ -37,7 +37,7 @@
 		<div class="container">
 			<!--<div class="the-logo"><a href="{{ site.baseurl }}/">SaaSitive</a></div>-->
 			<a href="{{ site.baseurl }}/">
-				<img src="{{ site.baseurl }}/images/logo.svg" alt="SaaSitive logo" style="width: 20%" />
+				<img src="{{ site.baseurl }}/images/logo.svg" alt="SaaSitive logo" style="width: 200px" />
 			</a>
 			{% include navigation.html %}
 		</div>
@@ -70,12 +70,12 @@
 			<p class="copyright">&copy; {{ site.time | date: '%Y' }} MLJAR Sp. z o.o. </p>
 		</div>
 	</footer>
-	<!--<script>
-			document.getElementById("open-nav").onclick = function () {
-				document.body.classList.toggle("nav-open");
-				return false;
-			};
-		</script>-->
+	<script>
+		document.getElementById("open-nav").onclick = function () {
+			document.body.classList.toggle("nav-open");
+			return false;
+		};
+	</script>
 	<script type="text/javascript" src="/js/lightbox.js"></script>
 	<link rel="stylesheet" href="/css/lightbox.css">
 	{% if jekyll.environment == 'production' %}

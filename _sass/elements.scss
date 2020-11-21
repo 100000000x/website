@@ -18,7 +18,8 @@ a {
 }
 
 a:hover {
-	text-decoration: underline;
+	text-decoration: none;
+	color: $secondary-brand-color;
 }
 
 img {
