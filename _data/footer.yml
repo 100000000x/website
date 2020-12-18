@@ -10,6 +10,11 @@
     link: /about/
   - name: Contact
     link: /contact/
+  - name: Terms of Service
+    link: /terms-of-service/
+  - name: Privacy Policy
+    link: /privacy-policy/
+    
 - links:
   - name: GitHub
     link: https://github.com/saasitive
