@@ -20,7 +20,7 @@ and User state that:
 
 *he's going to use your website, service according to Terms of service, and give necessary personal data, but you must use them as intended and provide adequate protection.*
 
-[Agreement](Agreement.png)
+![Agreement](Agreement.png)
 
 ## Where to start with GDPR
 
@@ -31,7 +31,7 @@ If you already prepared the Personal Data Protection Policy, you know that the n
 
 **Check the providers** with whom you intend to conclude contracts, their privacy policy, the method of data protection, where the data is stored, whether in the EU or outside. Start to build **Privacy Policy and Terms of Service**. Check if all your documents and your SaaS contain key provisions and ensure that the principles of respecting users' personal data are respected.
 
-[SaaS way to comply with GDPR](SaaS way to comply with GDPR.png) 
+![SaaS way to comply with GDPR](SaaS_way_to_comply_with_GDPR.png) 
 
 You can check the source https://ec.europa.eu/justice/smedataprotect/index_en.htm where you can find some necessary information about GDPR for small businesses.
 
@@ -40,7 +40,7 @@ You can check the source https://ec.europa.eu/justice/smedataprotect/index_en.ht
 
 It will be the primary document that includes all GDPR requirements. Is it necessary? The provisions of the GDPR require the implementation of appropriate technical and organizational measures so that the data processing is compliant and can be demonstrated. It's only an internal document which helps you to keep in order all requirements and duties. It is supposed to contain regulations about: processing of personal data, risk analysis, registers regarding the processing of personal data and records, proceedings in the event of a breach of personal data protection, the security of information systems. 
 
-[Table of contents](Table of Contents.png)
+![Table of contents](Table_of_Contents.png)
 
 This document can be the basis for your workers to know how to deal with personal data. In the beginning, give some basic definitions to explain key terminology. List the rights of people, describe the role of Personal Data Protection Officer, IT System Administrator, other persons authorized to process data, and Administrator's responsibilities. In any case, the crucial role and responsibility lie with the Administrator. 
 Indicate the purposes and legal grounds for data processing, as (art. 6 GDPR): 
@@ -60,8 +60,9 @@ Under GDPR regulation, you should provide a register of personal data processing
 - process data more often than sporadically; 
 - process information covering special categories of personal data; 
 - process personal data relating to criminal convictions and offenses.
-[Records of Data Processing](Records of data processing.jpg)
-Picture from https://ec.europa.eu/justice/smedataprotect/index_en.htm
+
+![Records of Data Processing](Records_of_data_processing.jpg)
+(Picture from https://ec.europa.eu/justice/smedataprotect/index_en.htm)
 
 GDPR also requires to document or register personal data breaches. 
 
@@ -82,7 +83,9 @@ Privacy by Design and Data Protection Impact Assessment. It's mandatory to know 
 - Innovative use or applying new technological or organizational solutions.
 - Preventing data subjects from exercising a right or using a service or contract.
 
-[DPIA](DPIA.png) [Privacy by Design](Privacy by Design.png)
+![DPIA](DPIA.png){:.image-75width}
+
+![Privacy by Design](Privacy_by_Design.png){:.image-75width}
 
 GDPR includes terminology without supporting definition. For example, high risk or large scale is relevant to describe. 
 
@@ -96,7 +99,7 @@ GDPR includes terminology without supporting definition. For example, high risk 
 
 **Invisible processing** is a situation when you obtained data not directly from the individual, and you don't in-form that person about processing his data. Processing is invisible because that person is unaware that you are collecting and using their personal data, even if you publish a privacy notice on your website. A DPIA is re-quired where this processing is combined with any of the criteria from the European guidelines.
 
-[GDPR Explained](GDPR Explained.png)
+![GDPR Explained](GDPR_Explained.png)
 
 All contained in this article information is just an essence form how GDPR permeates every professional activi-ty. Although the intention to introduce the GDPR resulted from the need to protect natural persons, they im-pose additional entrepreneurs' obligations. Anyone offering services should meet the basic requirements and take the user's will as a benchmark.
 
