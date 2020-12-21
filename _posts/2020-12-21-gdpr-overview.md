@@ -96,6 +96,12 @@ GDPR includes terminology without supporting definition. For example, high risk 
 
 **Invisible processing** is a situation when you obtained data not directly from the individual, and you don't in-form that person about processing his data. Processing is invisible because that person is unaware that you are collecting and using their personal data, even if you publish a privacy notice on your website. A DPIA is re-quired where this processing is combined with any of the criteria from the European guidelines.
 
+[GDPR Explained](GDPR Explained.png)
+
+All contained in this article information is just an essence form how GDPR permeates every professional activi-ty. Although the intention to introduce the GDPR resulted from the need to protect natural persons, they im-pose additional entrepreneurs' obligations. Anyone offering services should meet the basic requirements and take the user's will as a benchmark.
+
+**Note from the author:**
+Even though it contains a lot of practical information about legal stuff, you cannot treat it as legal advice. Each case is different and requires an individual approach. The purpose of this article is to help you to understand the essence of its subject.
 
 
 
