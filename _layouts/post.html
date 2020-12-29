@@ -13,11 +13,6 @@ layout: page
 
 		<hr>
 
-		{% if page.categories contains "Boilerplate" %}
-		{% include tutorial-links.html post=page %}
-		{% endif %}
-
-
 		<h4>Let's stay in touch!</h4>
 		<p>
 			Would you like to be notified about new posts? Please fill this
@@ -34,6 +29,11 @@ layout: page
 		</p>
 
 		<hr>
+
+		{% if page.categories contains "Boilerplate" %}
+		{% include tutorial-links.html post=page %}
+		{% endif %}
+
 
 
 		<div class="blog-navigation">
